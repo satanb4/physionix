@@ -18,14 +18,14 @@ int SignalInput(void)
 
     if (wiringPiSetup() == -1)
     {
-        printf("Setup for WiringPi has failed, please check!");
+        cout<<"Setup wiringPi failed!";
         exit(1);
     }
 
     while (1)
     {
         EMGValue = analogRead(EMG_PIN);
-        printf("EMG value: %d", EMGValue);
+        cout<<"EMG Value: "<<EMGValue<<endl;
         delay(30);
     }
 
