@@ -1,8 +1,16 @@
-# Physionix
-Repository for Embedded Application Physionix
+<br />
+   <h1 align="center">Physionix</h1>
+ </br>
 
-## AIMS
-This project aims to create a real-time physiotherapy application that will allow a user to carry out physiotherapy in their home without the need for a physiotherapist to be physically present. This will enable remote monitoring and also real-time actuation of the machine.
+## Your personal physiotherapist
+**Consult your physiotherapist from the comfort of your home**
 
-### EMG Board
-![image](https://user-images.githubusercontent.com/26685910/214528988-47deaa99-eecb-4313-bb65-86719b7fb25d.png)
+Our application is capable of detecting even the slightest motion of your muscles, helping you to complete your physio regimen to help you make the most of it. No more worries about over straining or under engaging your muscles. Our application is focussed on delivering optimum power to aid you in your exercises to help you become a better you.
+
+Interested in building physionix by yourself ? Head straight to our [installation guide](https://github.com/midhunjac/physionix/wiki/Installation-guide)
+
+# Contact Us 📧
+- This project is developed and maintained by :
+  * [Sayan Bandyopadhyay](https://github.com/satanb4)
+  * [Midhun Mathew](https://github.com/midhunjac) 
+  * [Sri Krishna Sumanth](https://github.com/Sumanth0201)
