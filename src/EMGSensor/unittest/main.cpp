@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
-#include "../EMG_sensor.h"
+#include "../include/EMG_sensor.h"
 
 using namespace EMG_sensor;
 

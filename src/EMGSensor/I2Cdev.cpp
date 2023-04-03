@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include <linux/i2c-dev.h>
 #include <fcntl.h>
-#include "I2Cdev.h"
+#include "include/I2Cdev.h"
 
 I2Cdev::I2Cdev() 
 {

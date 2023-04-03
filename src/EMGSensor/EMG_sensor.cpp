@@ -5,7 +5,7 @@ Original date : 17/02/2023
 
 */
 
-#include "EMG_sensor.h"
+#include "include/EMG_sensor.h"
 #include <iostream>
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
