@@ -9,6 +9,18 @@ Our application is capable of detecting even the slightest motion of your muscle
 
 Interested in building physionix by yourself ? Head straight to our [installation guide](https://github.com/midhunjac/physionix/wiki/Installation-guide)
 
+# How to Build
+Building this repository is easy. All code is build with a simple build script that takes care of dependencies as well.  
+Make sure to have root access to your system.  
+Just follow the steps below:
+- Clone the repository
+- Install the dependencies
+  ```sh
+  chmod +x build.sh
+  ./build.sh
+  ```
+- The application will be present in the `build` folder
+
 # Contact Us 📧
 - This project is developed and maintained by :
   * [Sayan Bandyopadhyay](https://github.com/satanb4)
