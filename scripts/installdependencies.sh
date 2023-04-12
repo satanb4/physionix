@@ -6,7 +6,7 @@ cmd="dpkg -s i2c-tools"
 if !($cmd | grep "ok installed"); then
     echo "i2c tools not found. Installing..."
     sudo apt-get update
-    sudo apt-get install -y i2c-tools
+    sudo apt-get install -y i2c-tools pigpio
 fi
 
 base_dir="$(pwd)"
