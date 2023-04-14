@@ -13,8 +13,18 @@ Interested in building physionix by yourself ? Head straight to our [installatio
 Building this repository is easy. All code is build with a simple build script that takes care of dependencies as well.  
 Make sure to have root access to your system.  
 Just follow the steps below:
+- Login to your Raspberry Pi Machine  
+**If Required** Install Git
+   ```sh
+   sudo apt-get update
+   sudo apt-get install -y git
+   ```
 - Clone the repository
-- Install the dependencies
+   ```sh
+   $ git clone https://github.com/satanb4/physionix.git
+   $ cd $HOME/physionix
+   ```
+- Install the dependencies and build
   ```sh
   chmod +x build.sh
   ./build.sh
