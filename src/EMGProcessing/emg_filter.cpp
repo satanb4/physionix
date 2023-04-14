@@ -29,6 +29,7 @@ void EMGFilter::setData(const std::vector<double>& data) {
 // Start the EMG processing thread
 void EMGFilter::start(std::vector<double>& emgData) {
     running = true;
+    EMGFilter::setData(emgData);
     emgThread = std::thread([this, &emgData] {
         while (running) {
             // add data to circular buffer
