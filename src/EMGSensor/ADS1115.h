@@ -63,7 +63,7 @@ public:
 	void stop();
 	~ADS1115() { stop(); }
 	// class should implement this function. This is the callback in case of new events.
-	virtual void newdata(float data) = 0;
+	virtual void newdata(float* data) = 0;
 private:
 	ADS1115_device device;
 	void _data_ready();
