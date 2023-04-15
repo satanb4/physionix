@@ -17,6 +17,6 @@ jobs:
       run: sudo touch /etc/apt/sources.list.d/raspbian.list \
           echo 'deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi' | sudo tee -a /etc/apt/sources.list.d/raspbian.list
     - name: Update Repo
-      run: sudo apt update
+      run: sudo apt-get -y update
     - name: Build Physionix Application
       run: export ACTIONS=true && ./build.sh
