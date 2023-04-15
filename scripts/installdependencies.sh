@@ -42,8 +42,8 @@ else
     echo "fftw already installed. Skipping..." | tee -a $build_log
 fi
 
-if [[ $(grep -q 'raspbian' /etc/os-release) ||  $ACTIONS = true ]]; then
-    if $ACTIONS; then
+if [[ $(grep -i 'raspbian' /etc/os-release) ||  $ACTIONS = true ]]; then
+    if [ "$ACTIONS" = true ]; then
         echo "Running in GitHub Actions. Installing pigpio..."  | tee -a $build_log
     else
         echo "Raspbian OS detected. Installing pigpio..." | tee -a $build_log
