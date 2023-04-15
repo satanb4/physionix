@@ -37,3 +37,11 @@ if [ ! -f '/usr/local/bin/fftw-wisdom' ]; then
 else
     echo "fftw already installed. Skipping..."
 fi
+
+if grep -q 'raspbian' /etc/os-release; then
+    echo "Raspbian OS detected. Installing Raspbian specific dependencies..."
+    sudo apt-get install -y pigpio
+else
+    echo "Non-Raspbian OS detected. Skipping Raspbian specific dependencies..."
+    sudo apt-get install -y pigpio-tools
+fi
