@@ -142,9 +142,21 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
             movement += fftData[i];
         }
     }
-    return movement;
+    newstate =  deducestate(movement);
+    if (currentstate != newstate)
+        movementdetect(newstate);
 }
 
+STATES deducestate(double movement)
+{
+    if (movement < RELAXED_MAX && movement >= RELAXED_MIN)
+        return RELAXED;
+    else if (movement < FLEXED_MAX && movement >= FLEXED_MIN)
+        return FLEXED;
+    else if (movement < ROTATING_MAX && movement >= ROTATING_MIN)
+        return ROTATING;
+        
+}
 double EMGFilter::getMovement() {
     return movement;
 }
