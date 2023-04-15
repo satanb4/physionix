@@ -4,7 +4,7 @@
 
 class ADS1115_test : public ADS1115
 {
-	virtual void newdata(float data) { printf("\ndata is %f",data);}
+	virtual void newdata(float *data) { printf("\ndata is %f",*data);}
 };
 
 int main(int argc, char* argv[]) {
