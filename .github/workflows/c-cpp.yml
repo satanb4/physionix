@@ -15,9 +15,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: Add Raspbian Repositories
       run: sudo touch /etc/apt/sources.list.d/raspbian.list \
-          echo 'deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi' | sudo tee -a /etc/apt/sources.list.d/raspbian.list \
-          export ACTIONS=true
+          echo 'deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi' | sudo tee -a /etc/apt/sources.list.d/raspbian.list
     - name: Update Repo
       run: sudo apt update
     - name: Build Physionix Application
-      run: ./build.sh
+      run: ACTIONS=true \
+        ./build.sh

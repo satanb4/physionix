@@ -43,7 +43,11 @@ else
 fi
 
 if [[ $(grep -q 'raspbian' /etc/os-release) ||  $ACTIONS = true ]]; then
-    echo "Raspbian OS detected. Installing Raspbian specific dependencies..."
+    if $ACTIONS; then
+        echo "Running in GitHub Actions. Installing pigpio..."  | tee -a $build_log
+    else
+        echo "Raspbian OS detected. Installing pigpio..." | tee -a $build_log
+    fi
     sudo apt-get install -y pigpio >> $build_log
 else
     echo "Non-Raspbian OS detected. Skipping Raspbian specific dependencies..."
