@@ -41,7 +41,7 @@ private:
     double lowPassCutoff;
     double highPassCutoff;
     double threshold;
-    STATES currentstate;
+    STATES currentstate = RELAXED;
     STATES newstate;
     std::vector<double> buffer;
     std::vector<double> lowPassCoeffs;
