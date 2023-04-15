@@ -118,7 +118,7 @@ void ADS1115::_data_ready()
 	uint16_t value = 0;
 	_i2c_value(device, &value);
 	float val = (float)value / (float)0x7fff * _compute_scaler(device.pga) * 2;
-	newdata(val);
+	newdata(&val);
 }
 
 void ADS1115::stop()
