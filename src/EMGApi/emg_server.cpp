@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #include "include/json_fastcgi_web_api.h"
-#include "include/fakesensor.h"
+#include "include/EMGSensor.h"
 #include <jsoncpp/json/json.h>
 
 /**
@@ -188,7 +188,7 @@ public:
 // Main program
 int main(int argc, char *argv[]) {
 	// getting all the ADC related acquistion set up
-	FakeSensor sensorcomm;
+	EMGSensor sensorcomm;
 	SENSORfastcgicallback sensorfastcgicallback;
 	sensorcomm.setCallback(&sensorfastcgicallback);
 

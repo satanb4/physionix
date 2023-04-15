@@ -1,6 +1,6 @@
 server {
         listen       80;
-        server_name  rpi.berndporr.me.uk;
+        server_name  physionix.gla.uk;
 
         location /favicon.ico {
           return 204;

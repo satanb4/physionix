@@ -1,5 +1,5 @@
-#ifndef __FAKESENSOR_H
-#define __FAKESENSOR_H
+#ifndef __EMGSensor_H
+#define __EMGSensor_H
 
 /**
  * Copyright (c) 2021  Bernd Porr <mail@berndporr.me.uk>
@@ -26,13 +26,13 @@ public:
  * This class reads data from a fake sensor in the background
  * and calls a callback function whenever data is available.
  **/
-class FakeSensor {
+class EMGSensor {
 
 public:
 
-	FakeSensor() = default;
+	EMGSensor() = default;
 
-	~FakeSensor() {
+	~EMGSensor() {
 		stop();
 	}
 
@@ -49,7 +49,7 @@ public:
 	 **/
 	void start() {
 		if (running) return;
-		thr = std::thread(&FakeSensor::exec,this);
+		thr = std::thread(&EMGSensor::exec,this);
 	}
 
 	/**
