@@ -6,10 +6,9 @@ build_dir="${base_dir}/build"
 src_dir="${base_dir}/src"
 
 sensor_dir="${src_dir}/EMGSensor"
-output_name1="emgSensor"
-
 processing_dir="${src_dir}/EMGProcessing"
-output_name2="emgFilter"
+final_build="physionix"
+
 
 build_log="${build_dir}/build_log.txt"
 if ! [ -f $build_log ]; then
@@ -41,4 +40,5 @@ echo 'Building project...'
 echo "Building EMGSensor..." | tee -a $build_log
 cd $src_dir
 make
+mv *.o $final_build $build_dir
 echo "Build complete." | tee -a $build_log
