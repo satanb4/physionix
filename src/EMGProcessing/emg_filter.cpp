@@ -4,7 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <fftw3.h>
-#include "include/emg_filter.h"
+#include "emg_filter.h"
 
 EMGFilter::EMGFilter(int sampleRate, int windowSize, int filterOrder, double lowPassCutoff, double highPassCutoff, double threshold) {
     this->sampleRate = sampleRate;

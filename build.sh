@@ -37,12 +37,8 @@ else
 fi
 
 # Build the project
-echo 'Building project...' | tee -a $build_log
+echo 'Building project...'
 echo "Building EMGSensor..." | tee -a $build_log
-cd $sensor_dir/sample-application
+cd $src_dir
 make
-mv *.o $output_name1 $build_dir
-cd $processing_dir/sample-application
-make
-mv *.o $output_name2 $build_dir
 echo "Build complete." | tee -a $build_log
