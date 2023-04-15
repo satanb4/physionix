@@ -19,4 +19,4 @@ jobs:
     - name: Update Repo
       run: sudo apt update
     - name: Build Physionix Application
-      run: ACTIONS=true && ./build.sh
+      run: export ACTIONS=true && ./build.sh
