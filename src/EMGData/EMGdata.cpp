@@ -13,9 +13,9 @@ int EMGdata::_start()
 	device.addr = 0x48;
 	device.data_rate = 128;
 	device.pga = PGA_2_048;
-	this->ADS1115.start(device);
+	ADS1115::start(device);
 	getchar();
-	this->ADS1115.stop();
+	ADS1115::stop();
 	return 0;
 
 }
