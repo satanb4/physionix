@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <thread>
-
+#include <functional>
 
 std::vector<double> testdata;
 double data;
@@ -28,8 +28,8 @@ void generatedata()
 		{
 			std::vector<double> data(testdata);
 			testdata.clear();
-			//emgfilter.start(data);
-			std::thread workthread(&filtertest::start,&emgfilter,data);
+			emgfilter.start(data);
+			//std::thread workthread = std::thread(&filtertest::start,std::ref(data));
 		}
 		//printf("\n%f",data);
 	}
