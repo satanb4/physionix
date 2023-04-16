@@ -11,11 +11,6 @@ api_dir="${src_dir}/EMGApi"
 final_build="physionix"
 
 
-build_log="${build_dir}/build_log.txt"
-if ! [ -f $build_log ]; then
-    touch $build_log
-fi
-
 # Create the build directory
 echo 'Creating build directory...'
 if [ -d $build_dir ]; then
@@ -24,6 +19,10 @@ if [ -d $build_dir ]; then
 fi
 mkdir -p $build_dir 
 
+build_log="${build_dir}/build_log.txt"
+if ! [ -f $build_log ]; then
+    touch $build_log
+fi
 
 # Install Dependencies
 echo 'Installing dependencies...'

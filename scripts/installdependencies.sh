@@ -10,7 +10,7 @@ cmd="dpkg -s i2c-tools"
 if !($cmd | grep "ok installed"); then
     echo "i2c tools not found. Installing..." | tee -a $build_log
     sudo apt-get update
-    sudo apt-get install -y i2c-tools >> $build_log
+    sudo apt-get install -y i2c-tools libfcgi-dev libjsoncpp-dev >> $build_log
 fi
 
 base_dir="$(pwd)"
@@ -48,10 +48,10 @@ if [[ $(grep -i 'raspbian' /etc/os-release) ||  $ACTIONS = true ]]; then
     else
         echo "Raspbian OS detected. Installing pigpio..." | tee -a $build_log
     fi
-    sudo apt-get install -y pigpio libfcgi-dev libjsoncpp-dev >> $build_log
+    sudo apt-get install -y pigpio >> $build_log
 else
     echo "Non-Raspbian OS detected. Skipping Raspbian specific dependencies..."
-    sudo apt-get install -y pigpio-tools libfcgi-dev libjsoncpp-dev >> $build_log
+    sudo apt-get install -y pigpio-tools >> $build_log
 fi
 
 # Build the jsonfastcgi interface library
