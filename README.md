@@ -5,12 +5,12 @@
 ## Your personal physiotherapist
 **Consult your physiotherapist from the comfort of your home**
 
-Our application is capable of detecting even the slightest motion of your muscles, helping you to complete your physio regimen to help you make the most of it. No more worries about over straining or under engaging your muscles. Our application is focussed on delivering optimum power to aid you in your exercises to help you become a better you.
+Our application is capable of detecting even the slightest motion of your muscles, helping you to complete your physio regimen to help you make the most of it. No more worries about over-straining or under-engaging your muscles. Our application is focused on delivering optimum power to aid you in your exercises and to help you become a better you.
 
 Interested in building physionix by yourself ? Head straight to our [installation guide](https://github.com/midhunjac/physionix/wiki/Installation-guide)
 
 # How to Build
-Building this repository is easy. All code is build with a simple build script that takes care of dependencies as well.  
+Building this repository is easy. All code is built with a simple build script that takes care of dependencies as well.  
 Make sure to have root access to your system.  
 Just follow the steps below:
 - Login to your Raspberry Pi Machine  
