@@ -38,7 +38,7 @@ struct EMG_filter
     int     sampleRate      =       DEFAULT_SAMPLERATE;
     int     windowSize      =       DEFAULT_WINDOWSIZE;
     int     filterOrder     =       DEFAULT_FILTERORDER;
-    double  lowPassCutOff   =       DEFAULT_LOWPASSCUTOFF;
+    double  lowPassCutoff   =       DEFAULT_LOWPASSCUTOFF;
     double  highPassCutoff  =       DEFAULT_HIGHPASSCUTOFF;
     double  threshold       =       DEFAULT_THRESHOLD;
 
@@ -70,8 +70,8 @@ private:
     bool dataReady;
     std::condition_variable dataCond;
     std::mutex dataMutex;
-    std::thread emgThread;
-
+    std::thread* emgThread = nullptr;
+    void start_processing(std::vector<double>& emgData);
     std::vector<double> butterworthLowPassCoeffs(int order, double cutoff, int sampleRate);
     std::vector<double> filterData(const std::vector<double>& data, const std::vector<double>& coeffs);
     std::vector<double> calculateFFT(const std::vector<double>& data);
