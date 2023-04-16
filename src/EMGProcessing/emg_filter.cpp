@@ -18,6 +18,7 @@ void EMGFilter::set_filter_params(EMG_filter filter)
     this->lowPassCutoff = filter.lowPassCutoff;
     this->highPassCutoff = filter.highPassCutoff;
     this->threshold = filter.threshold;
+    this->aggregateDataLimit = filter.aggregateDataLimit;
     buffer = std::vector<double>(windowSize, 0);
     running = false;
 }
@@ -200,13 +201,39 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
     }
     movement /= fftData.size();
     movement -= 2*10e4;
+    movement = abs(movement);
     std::cout<<"movement: "<< movement <<std::endl;
 
     newstate =  deducestate(movement);
+    movementData.push_back(newstate);
+    if (movementData.size() > aggregateDataLimit){
+        newstate = aggregateMovement(movementData);
+        movementData.clear();
+    }
+
     if (currentstate != newstate)
         movementdetect(newstate);
     if (newstate == RELAXED)
         movementdetect(RELAXED);
+    return movement;
+}
+
+STATES EMGFilter::aggregateMovement(std::vector<double>& movementData) {
+    int n = movementData.size();
+    int maxcount = 0;
+    int element_having_max_freq;
+    for (int i = 0; i < n; i++) {
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (movementData[i] == movementData[j])
+                count++;
+        }
+        if (count > maxcount) {
+            maxcount = count;
+            element_having_max_freq = movementData[i];
+        }
+    }
+    return deducestate(element_having_max_freq);
 }
 
 STATES EMGFilter::deducestate(double movement)

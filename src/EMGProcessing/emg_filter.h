@@ -27,6 +27,7 @@
 #define DEFAULT_LOWPASSCUTOFF       20
 #define DEFAULT_HIGHPASSCUTOFF      600
 #define DEFAULT_THRESHOLD           20
+#define DEFAULT_MOVEMENTDATA_SIZE   5000
 
 enum STATES
 {
@@ -43,6 +44,7 @@ struct EMG_filter
     double  lowPassCutoff   =       DEFAULT_LOWPASSCUTOFF;
     double  highPassCutoff  =       DEFAULT_HIGHPASSCUTOFF;
     double  threshold       =       DEFAULT_THRESHOLD;
+    int     aggregateDataLimit =      DEFAULT_MOVEMENTDATA_SIZE;
 
 };
 class EMGFilter {
@@ -61,6 +63,7 @@ private:
     int sampleRate;
     int windowSize;
     int filterOrder;
+    int aggregateDataLimit;
     double lowPassCutoff;
     double highPassCutoff;
     double threshold;
@@ -69,6 +72,7 @@ private:
     std::vector<double> buffer;
     std::vector<double> lowPassCoeffs;
     std::vector<double> highPassCoeffs;
+    std::vector<double> movementData;
     double movement;
     bool running;
     bool dataReady;
@@ -81,6 +85,7 @@ private:
     std::vector<double> filterData(const std::vector<double>& data, const std::vector<double>& coeffs);
     std::vector<double> calculateFFT(const std::vector<double>& data);
     double extractMovement(const std::vector<double>& fftData, double threshold);
+    STATES aggregateMovement(std::vector<double>& movementData);
     STATES deducestate(double movement);
 };
 
