@@ -9,6 +9,7 @@
 
 std::vector<double> testdata;
 double data;
+std::thread* emgThread ;
 class filtertest : public EMGFilter
 {
 	virtual void movementdetect(STATES currstate)
@@ -26,12 +27,11 @@ void generatedata()
 		testdata.push_back(data);
 		if(testdata.size() >=256)
 		{
-			std::vector<double> data(testdata);
+			//std::vector<double> data(testdata);
+			emgfilter.emgData = testdata;
 			testdata.clear();
-			emgfilter.start(data);
-			//std::thread workthread = std::thread(&filtertest::start,std::ref(data));
+
 		}
-		//printf("\n%f",data);
 	}
 
 }
@@ -45,9 +45,10 @@ int main(int argc, char* argv[]) {
 	filter.sampleRate = 200;
 	filter.windowSize = 256;
 	emgfilter.set_filter_params(filter);
+	emgfilter.start();
 	generatedata();
 	getchar();
-	//emgfilter.stop();
+	emgfilter.stop();
 	return 0;
 
 }

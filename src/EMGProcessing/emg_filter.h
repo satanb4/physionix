@@ -1,6 +1,7 @@
 #include <fftw3.h>
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #ifndef EMG_FILTER_H
 #define EMG_FILTER_H
@@ -46,12 +47,15 @@ struct EMG_filter
 class EMGFilter {
 public:
     EMGFilter() {}
+    std::vector<double> emgData;
+
     void set_filter_params(EMG_filter);
     double getMovement();
     void setData(const std::vector<double>& data);
-    void start(std::vector<double>& emgData);
+    void start();
     void stop();
     virtual void movementdetect(STATES movement) = 0;
+
 private:
     int sampleRate;
     int windowSize;
@@ -64,14 +68,13 @@ private:
     std::vector<double> buffer;
     std::vector<double> lowPassCoeffs;
     std::vector<double> highPassCoeffs;
-    std::vector<double> emgData;
     double movement;
     bool running;
     bool dataReady;
     std::condition_variable dataCond;
     std::mutex dataMutex;
     std::thread* emgThread = nullptr;
-    void start_processing(std::vector<double>& emgData);
+    void start_processing();
     std::vector<double> butterworthLowPassCoeffs(int order, double cutoff, int sampleRate);
     std::vector<double> filterData(const std::vector<double>& data, const std::vector<double>& coeffs);
     std::vector<double> calculateFFT(const std::vector<double>& data);

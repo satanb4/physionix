@@ -4,4 +4,4 @@ emg_filter.o: ../emg_filter.cpp ../emg_filter.h
 	g++ -c ../emg_filter.cpp
 
 clean:
-	rm *.o
+	rm *.o emg_filter
