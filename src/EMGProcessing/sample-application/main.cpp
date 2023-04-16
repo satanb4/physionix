@@ -4,12 +4,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
-#include <thread>
-#include <functional>
 
 std::vector<double> testdata;
 double data;
-std::thread* emgThread ;
 class filtertest : public EMGFilter
 {
 	virtual void movementdetect(STATES currstate)
