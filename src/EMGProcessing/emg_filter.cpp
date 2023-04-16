@@ -5,12 +5,11 @@
 #include <fftw3.h>
 #include <cstdlib>
 #include <stdlib.h>
+#include <functional>
 #include "emg_filter.h"
-
 
 void EMGFilter::set_filter_params(EMG_filter filter)
 {
-    
     this->sampleRate = filter.sampleRate;
     this->windowSize = filter.windowSize;
     this->filterOrder = filter.filterOrder;
@@ -30,11 +29,18 @@ void EMGFilter::setData(const std::vector<double>& data) {
     dataCond.notify_one();
 }
 
+void EMGFilter::start()
+{
+    if(nullptr!=emgThread) return;
+    emgThread = new std::thread(&EMGFilter::start_processing,this);
+    //emgThread = new std::thread(&EMGFilter::start_processing,this,std::ref(emgData));
+    
+}
 // Start the EMG processing thread
-void EMGFilter::start(std::vector<double>& emgData) {
+void EMGFilter::start_processing() {
     running = true;
-    EMGFilter::setData(emgData);
-        while (running) {
+    //EMGFilter::setData(emgData);
+    while(running){
             // add data to circular buffer
             buffer.insert(buffer.end(), emgData.begin(), emgData.end());
             buffer.erase(buffer.begin(), buffer.begin() + emgData.size());
@@ -57,14 +63,23 @@ void EMGFilter::start(std::vector<double>& emgData) {
             // sleep for a short time to avoid high CPU usage
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
+        
 }
 
 // Stop the EMG processing thread
 void EMGFilter::stop() {
     running = false;
-    /*if (emgThread.joinable()) {
-        emgThread.join();
+    /*if(nullptr != emgThread)
+    {
+        emgThread->join();
+        delete emgThread;
+        emgThread = nullptr;
     }*/
+    if (emgThread->joinable()) {
+        emgThread->join();
+        delete emgThread;
+        emgThread = nullptr;
+    }
 }
 
 // Generate filter coefficients for a butterworth low-pass filter
