@@ -59,7 +59,7 @@ void setHUPHandler() {
  **/
 class SENSORfastcgicallback : public SensorCallback {
 public:
-	std::deque<float> temperatureBuffer;
+	std::deque<float> emgBuffer;
 	std::deque<long> timeBuffer;
 	long t;
 	const int maxBufSize = 50;
@@ -69,21 +69,21 @@ public:
 	 * Callback with the fresh ADC data.
 	 * That's where all the internal processing
 	 * of the data is happening. Here, we just
-	 * convert the raw ADC data to temperature
+	 * convert the raw ADC data to emg_data
 	 * and store it in a variable.
 	 **/
 	virtual void hasSample(float v) {
 		lastValue = v;
-		temperatureBuffer.push_back(v);
-		if (temperatureBuffer.size() > maxBufSize) temperatureBuffer.pop_front();
+		emgBuffer.push_back(v);
+		if (emgBuffer.size() > maxBufSize) emgBuffer.pop_front();
 		// timestamp
 		t = getTimeMS();
 		timeBuffer.push_back(t);
 		if (timeBuffer.size() > maxBufSize) timeBuffer.pop_front();
 	}
 
-	void forceTemperature(float temp) {
-		for(auto& v:temperatureBuffer) {
+	void forceemg_data(float temp) {
+		for(auto& v:emgBuffer) {
 			v = temp;
 		}
 	}
@@ -100,7 +100,7 @@ private:
 
 /**
  * Callback handler which returns data to the
- * nginx server. Here, simply the current temperature
+ * nginx server. Here, simply the current emg_data
  * and the timestamp is transmitted to nginx and the
  * javascript application.
  **/
@@ -126,17 +126,17 @@ public:
 	/**
 	 * Gets the data sends it to the webserver.
 	 * The callback creates two json entries. One with the
-	 * timestamp and one with the temperature from the sensor.
+	 * timestamp and one with the emg_data from the sensor.
 	 **/
 	virtual std::string getJSONString() {
         Json::Value root;
         root["epoch"] = (int)time(NULL);
 	root["lastvalue"] = sensorfastcgi->lastValue;
-        Json::Value temperature;
-        for(int i = 0; i < sensorfastcgi->temperatureBuffer.size(); i++) {
-        	temperature[i] = sensorfastcgi->temperatureBuffer[i];
+        Json::Value emg_data;
+        for(int i = 0; i < sensorfastcgi->emgBuffer.size(); i++) {
+        	emg_data[i] = sensorfastcgi->emgBuffer[i];
     	}
-        root["temperature"]  = temperature;
+        root["emg_data"]  = emg_data;
 		Json::Value t;
         for(int i = 0; i < sensorfastcgi->timeBuffer.size(); i++) {
 			t[i] = (int)sensorfastcgi->timeBuffer[i];
@@ -159,8 +159,8 @@ public:
 	}
 
 	/**
-	 * As a crude example we force the temperature readings
-	 * to be 20 degrees for a certain number of timesteps.
+	 * As a crude example we force the emg_data readings
+	 * to be 20 millivolts for a certain number of timesteps.
 	 **/
 	virtual void postString(std::string postArg) {
 		const auto rawJsonLength = static_cast<int>(postArg.length());
@@ -173,13 +173,13 @@ public:
 			std::cout << "error" << std::endl;
 			return;
 		}
-		float temp = root["temperature"].asFloat();
+		float temp = root["emg_data"].asFloat();
 		std::cerr << root["hello"].asString() << "\n";
-		sensorfastcgi->forceTemperature(temp);
+		sensorfastcgi->forceemg_data(temp);
 	}
 
 	/**
-	 * Pointer to the handler which keeps the temperature
+	 * Pointer to the handler which keeps the emg_data
 	 **/
 	SENSORfastcgicallback* sensorfastcgi;
 };
