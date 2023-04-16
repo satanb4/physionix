@@ -27,7 +27,6 @@ class EMGdata: public ADS1115, public EMGFilter
 	}
 public:
 	int _start();
-	void addsamples();
 	std::vector<double> measuredata;
 
 
