@@ -13,8 +13,10 @@ server {
           fastcgi_pass   unix:/tmp/sensorsocket;
         }
 
+        location ~* \.(?:css|js|map|jpe?g|gif|png)$ { }
+
         location / {
-	  root /var/www/html;
+	        root /var/www/html;
           index index.html;
         }
 }

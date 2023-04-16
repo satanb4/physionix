@@ -47,6 +47,7 @@ echo "Build complete." | tee -a $build_log
 # Build the EMGApi
 echo "Building EMGApi..." | tee -a $build_log
 api_output="${api_dir}/PhysionixServer"
+site_dir="${api_dir}/website"
 if [ -d $api_dir ]; then
     cd $api_dir
     cmake CMakeLists.txt
@@ -54,6 +55,14 @@ if [ -d $api_dir ]; then
     mv *.o $api_output $build_dir
     rm -rf CMakeFiles CMakeCache.txt cmake_install.cmake Makefile
     echo "Build complete." | tee -a $build_log
+    echo "Copying website files..." | tee -a $build_log
+    if [ -d $site_dir ]; then
+        echo "Found website directory. Copying..." | tee -a $build_log
+        cp -r $site_dir $build_dir
+        echo "Website files copied." | tee -a $build_log
+    else
+        echo "Website directory not found. Skipping..." | tee -a $build_log
+    fi
 else
     echo "EMGApi not found. Skipping..." | tee -a $build_log
 fi
