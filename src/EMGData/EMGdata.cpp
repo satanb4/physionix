@@ -5,10 +5,8 @@
 #include <thread>
 #include "EMGdata.h"
 #include <cstdlib>
-#include <stdlib.h>
-#include <iostream>
 
-int EMGdata::_start()
+void EMGdata::_start()
 {
 	ADS1115_device device;
 	device.addr = 0x48;
@@ -25,7 +23,14 @@ int EMGdata::_start()
 	ADS1115::start(device);
 	EMGFilter::set_filter_params(filter);
 	EMGFilter::start();
-	return 0;
+	std::system("./PhysionixServer");
+	
 
+}
+void EMGdata::_stop()
+{
+	printf("\nExiting app");
+	ADS1115::stop();
+	EMGFilter::stop();
 }
 
