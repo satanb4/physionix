@@ -76,6 +76,7 @@ private:
     std::thread* emgThread = nullptr;
     void start_processing();
     std::vector<double> butterworthLowPassCoeffs(int order, double cutoff, int sampleRate);
+    // std::vector<double> butterworthHighPassCoeffs(int order, double cutoff, int sampleRate);
     std::vector<double> filterData(const std::vector<double>& data, const std::vector<double>& coeffs);
     std::vector<double> calculateFFT(const std::vector<double>& data);
     double extractMovement(const std::vector<double>& fftData, double threshold);
