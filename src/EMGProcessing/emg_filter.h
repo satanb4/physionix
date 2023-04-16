@@ -20,15 +20,33 @@
 #define ROTATING_MAX    300
 #define ROTATING_MIN    700
 
+#define DEFAULT_SAMPLERATE          200
+#define DEFAULT_WINDOWSIZE          256
+#define DEFAULT_FILTERORDER         2
+#define DEFAULT_LOWPASSCUTOFF       20
+#define DEFAULT_HIGHPASSCUTOFF      20
+#define DEFAULT_THRESHOLD           0.1
+
 enum STATES
 {
     RELAXED,
     FLEXED,
     ROTATING
 };
+struct EMG_filter
+{
+    int     sampleRate      =       DEFAULT_SAMPLERATE;
+    int     windowSize      =       DEFAULT_WINDOWSIZE;
+    int     filterOrder     =       DEFAULT_FILTERORDER;
+    double  lowPassCutOff   =       DEFAULT_LOWPASSCUTOFF;
+    double  highPassCutoff  =       DEFAULT_HIGHPASSCUTOFF;
+    double  threshold       =       DEFAULT_THRESHOLD;
+
+};
 class EMGFilter {
 public:
-    EMGFilter(int sampleRate = 200, int windowSize = 256, int filterOrder = 2, double lowPassCutoff = 20, double highPassCutoff = 20, double threshold = 0.1);
+    EMGFilter() {}
+    void set_filter_params(EMG_filter);
     double getMovement();
     void setData(const std::vector<double>& data);
     void start(std::vector<double>& emgData);

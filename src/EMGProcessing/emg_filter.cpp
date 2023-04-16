@@ -17,6 +17,9 @@ EMGFilter::EMGFilter(int sampleRate, int windowSize, int filterOrder, double low
     lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
     running = false;
 }
+void EMGFilter::setfilterparams(EMG_filter)
+{
+}
 
 // Set the data to be processed
 void EMGFilter::setData(const std::vector<double>& data) {
@@ -147,7 +150,7 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
         movementdetect(newstate);
 }
 
-STATES deducestate(double movement)
+STATES EMGFilter::deducestate(double movement)
 {
     if (movement < RELAXED_MAX && movement >= RELAXED_MIN)
         return RELAXED;
