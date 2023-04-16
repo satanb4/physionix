@@ -3,12 +3,6 @@
 
 class EMGdata: public ADS1115, public EMGFilter
 {
-	EMGdata() {};
-	~EMGdata() 
-	{
-		EMGFilter::stop();
-		ADS1115::stop();
-	}
 	virtual void newdata(float* data)
 	{
 #ifdef DEBUG
@@ -26,6 +20,12 @@ class EMGdata: public ADS1115, public EMGFilter
 		printf("\nmovement is %d",movement);
 	}
 public:
+	EMGdata() {};
+	~EMGdata()
+	{
+		EMGFilter::stop();
+		ADS1115::stop();
+	}
 	int _start();
 	std::vector<double> measuredata;
 
