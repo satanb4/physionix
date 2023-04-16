@@ -8,6 +8,8 @@
 #include <functional>
 #include "emg_filter.h"
 
+// #define DEBUG
+
 void EMGFilter::set_filter_params(EMG_filter filter)
 {
     this->sampleRate = filter.sampleRate;
@@ -17,7 +19,6 @@ void EMGFilter::set_filter_params(EMG_filter filter)
     this->highPassCutoff = filter.highPassCutoff;
     this->threshold = filter.threshold;
     buffer = std::vector<double>(windowSize, 0);
-    lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
     running = false;
 }
 
@@ -33,32 +34,35 @@ void EMGFilter::start()
 {
     if(nullptr!=emgThread) return;
     emgThread = new std::thread(&EMGFilter::start_processing,this);
-    //emgThread = new std::thread(&EMGFilter::start_processing,this,std::ref(emgData));
     
 }
 // Start the EMG processing thread
 void EMGFilter::start_processing() {
     running = true;
-    //EMGFilter::setData(emgData);
+    EMGFilter::setData(emgData);
     while(running){
             // add data to circular buffer
             buffer.insert(buffer.end(), emgData.begin(), emgData.end());
             buffer.erase(buffer.begin(), buffer.begin() + emgData.size());
 
-            // apply high-pass filter
-            std::vector<double> highPassData = filterData(buffer, highPassCoeffs);
+            // Generate filter coefficients for a butterworth low-pass filter
+            lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
 
-            // apply low-pass filter
-            std::vector<double> lowPassData = filterData(highPassData, lowPassCoeffs);
+            // Apply low-pass filter
+            std::vector<double> lowPassData = filterData(buffer, lowPassCoeffs);
 
             // calculate FFT
             std::vector<double> fftData = calculateFFT(lowPassData);
+            #ifdef DEBUG
+            std::cout << "FFT data: ";
+            for (int i = 0; i < fftData.size(); i++) {
+                std::cout << fftData[i] << " ";
+            }
+            std::cout << std::endl;
+            #endif
 
             // extract movement
             double movement = extractMovement(fftData, threshold);
-
-            // do something with movement data
-            // ...
 
             // sleep for a short time to avoid high CPU usage
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -69,12 +73,6 @@ void EMGFilter::start_processing() {
 // Stop the EMG processing thread
 void EMGFilter::stop() {
     running = false;
-    /*if(nullptr != emgThread)
-    {
-        emgThread->join();
-        delete emgThread;
-        emgThread = nullptr;
-    }*/
     if (emgThread->joinable()) {
         emgThread->join();
         delete emgThread;
@@ -95,15 +93,21 @@ std::vector<double> EMGFilter::butterworthLowPassCoeffs(int order, double cutoff
     b[1] = 2 * alpha * alpha;
     b[2] = alpha * alpha;
     std::vector<double> coeffs(order * 2 + 1, 0);
-    
+
     // calculate filter coefficients using bilinear
     // transformation
-    for (int i = 0; i < order + 1; i++) {
+    for (int i = 0; i < order - 1; i++) {
         coeffs[i] = b[i] / a[0];
         coeffs[i + order + 1] = -a[i] / a[0];
     }
+
+    #ifdef DEBUG
+    std::cout << "butterworthLowPassCoeffs: " << coeffs[0] << " " << coeffs[1] << " " << coeffs[2] << " " << coeffs[3] << " " << coeffs[4] << " " << coeffs[5] << " " << coeffs[6] << std::endl;
+    #endif
+
     return coeffs;
 }
+
 
 // FFT function
 std::vector<double> EMGFilter::calculateFFT(const std::vector<double>&  data) {
@@ -148,6 +152,11 @@ std::vector<double> EMGFilter::filterData(const std::vector<double>& data, const
             }
         }
     }
+
+    #ifdef DEBUG
+    std::cout << "filterData: " << filteredData[0] << " " << filteredData[1] << " " << filteredData[2] << " " << filteredData[3] << " " << filteredData[4] << " " << filteredData[5] << " " << filteredData[6] << std::endl;
+    #endif
+    
     return filteredData;
 }
 

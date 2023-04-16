@@ -11,7 +11,8 @@ class filtertest : public EMGFilter
 {
 	virtual void movementdetect(STATES currstate)
 	{
-		printf("\nmovement is %d", currstate);
+		std::cout << "movement detected" << std::endl;
+		std::cout << "state is " << currstate << std::endl;
 	}
 };
 filtertest emgfilter;
@@ -33,7 +34,7 @@ void generatedata()
 
 }
 int main(int argc, char* argv[]) {
-	printf("\nstarting application");
+	std::cout << "Starting Application" << std::endl;
 	EMG_filter filter;
 	filter.filterOrder = 2;
 	filter.highPassCutoff =20;
