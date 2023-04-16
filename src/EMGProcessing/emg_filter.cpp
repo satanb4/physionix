@@ -8,6 +8,8 @@
 #include <functional>
 #include "emg_filter.h"
 
+// #define DEBUG
+
 void EMGFilter::set_filter_params(EMG_filter filter)
 {
     this->sampleRate = filter.sampleRate;
@@ -16,49 +18,46 @@ void EMGFilter::set_filter_params(EMG_filter filter)
     this->lowPassCutoff = filter.lowPassCutoff;
     this->highPassCutoff = filter.highPassCutoff;
     this->threshold = filter.threshold;
+    this->aggregateDataLimit = filter.aggregateDataLimit;
     buffer = std::vector<double>(windowSize, 0);
-    lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
     running = false;
-}
-
-// Set the data to be processed
-void EMGFilter::setData(const std::vector<double>& data) {
-    std::unique_lock<std::mutex> lock(dataMutex);
-    emgData = data;
-    dataReady = true;
-    dataCond.notify_one();
 }
 
 void EMGFilter::start()
 {
     if(nullptr!=emgThread) return;
     emgThread = new std::thread(&EMGFilter::start_processing,this);
-    //emgThread = new std::thread(&EMGFilter::start_processing,this,std::ref(emgData));
     
 }
 // Start the EMG processing thread
 void EMGFilter::start_processing() {
     running = true;
-    //EMGFilter::setData(emgData);
     while(running){
             // add data to circular buffer
             buffer.insert(buffer.end(), emgData.begin(), emgData.end());
             buffer.erase(buffer.begin(), buffer.begin() + emgData.size());
 
-            // apply high-pass filter
-            std::vector<double> highPassData = filterData(buffer, highPassCoeffs);
+            // Generate filter coefficients for a butterworth low-pass filter
+            lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
+            highPassCoeffs = butterworthLowPassCoeffs(filterOrder, highPassCutoff, sampleRate);
 
-            // apply low-pass filter
+            // Apply high-pass filter
+            std::vector<double> highPassData = filterData(buffer, highPassCoeffs);
+            // Apply low-pass filter
             std::vector<double> lowPassData = filterData(highPassData, lowPassCoeffs);
 
             // calculate FFT
             std::vector<double> fftData = calculateFFT(lowPassData);
+            #ifdef DEBUG
+            std::cout << "FFT data: ";
+            for (int i = 0; i < fftData.size(); i++) {
+                std::cout << fftData[i] << " ";
+            }
+            std::cout << std::endl;
+            #endif
 
             // extract movement
             double movement = extractMovement(fftData, threshold);
-
-            // do something with movement data
-            // ...
 
             // sleep for a short time to avoid high CPU usage
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -69,12 +68,6 @@ void EMGFilter::start_processing() {
 // Stop the EMG processing thread
 void EMGFilter::stop() {
     running = false;
-    /*if(nullptr != emgThread)
-    {
-        emgThread->join();
-        delete emgThread;
-        emgThread = nullptr;
-    }*/
     if (emgThread->joinable()) {
         emgThread->join();
         delete emgThread;
@@ -95,15 +88,48 @@ std::vector<double> EMGFilter::butterworthLowPassCoeffs(int order, double cutoff
     b[1] = 2 * alpha * alpha;
     b[2] = alpha * alpha;
     std::vector<double> coeffs(order * 2 + 1, 0);
-    
+
     // calculate filter coefficients using bilinear
     // transformation
-    for (int i = 0; i < order + 1; i++) {
+    for (int i = 0; i < order - 1; i++) {
         coeffs[i] = b[i] / a[0];
         coeffs[i + order + 1] = -a[i] / a[0];
     }
+
+    #ifdef DEBUG
+    std::cout << "butterworthLowPassCoeffs: " << coeffs[0] << " " << coeffs[1] << " " << coeffs[2] << " " << coeffs[3] << " " << coeffs[4] << " " << coeffs[5] << " " << coeffs[6] << std::endl;
+    #endif
+
     return coeffs;
 }
+
+std::vector<double> EMGFilter::butterworthHighPassCoeffs(int order, double cutoff, int sampleRate) {
+    double theta_c = 2 * M_PI * sampleRate / cutoff;
+    double alpha = sin(theta_c) / (2 * order);
+    std::vector<double> a(order + 1, 0);
+    std::vector<double> b(order + 1, 0);
+    a[0] = 1 + 2 * alpha + 2 * alpha * alpha;
+    a[1] = -2 * (1 + alpha) * cos(theta_c);
+    a[2] = 1 - 2 * alpha + 2 * alpha * alpha;
+    b[0] = alpha * alpha;
+    b[1] = 2 * alpha * alpha;
+    b[2] = alpha * alpha;
+    std::vector<double> coeffs(order * 2 + 1, 0);
+
+    // calculate filter coefficients using bilinear
+    // transformation
+    for (int i = 0; i < order - 1; i++) {
+        coeffs[i] = b[i] / a[0];
+        coeffs[i + order + 1] = a[i] / a[0];
+    }
+
+    #ifdef DEBUG
+    std::cout << "butterworthHighPassCoeffs: " << coeffs[0] << " " << coeffs[1] << " " << coeffs[2] << " " << coeffs[3] << " " << coeffs[4] << " " << coeffs[5] << " " << coeffs[6] << std::endl;
+    #endif
+
+    return coeffs;
+}
+
 
 // FFT function
 std::vector<double> EMGFilter::calculateFFT(const std::vector<double>&  data) {
@@ -148,6 +174,11 @@ std::vector<double> EMGFilter::filterData(const std::vector<double>& data, const
             }
         }
     }
+
+    #ifdef DEBUG
+    std::cout << "filterData: " << filteredData[0] << " " << filteredData[1] << " " << filteredData[2] << " " << filteredData[3] << " " << filteredData[4] << " " << filteredData[5] << " " << filteredData[6] << std::endl;
+    #endif
+    
     return filteredData;
 }
 
@@ -159,11 +190,41 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
             movement += fftData[i];
         }
     }
+    movement /= fftData.size();
+    movement -= 2*10e4;
+    movement = abs(movement);
+    std::cout<<"movement: "<< movement <<std::endl;
+
     newstate =  deducestate(movement);
+    movementData.push_back(newstate);
+    if (movementData.size() > aggregateDataLimit){
+        newstate = aggregateMovement(movementData);
+        movementData.clear();
+    }
+
     if (currentstate != newstate)
         movementdetect(newstate);
     if (newstate == RELAXED)
         movementdetect(RELAXED);
+    return movement;
+}
+
+STATES EMGFilter::aggregateMovement(std::vector<double>& movementData) {
+    int n = movementData.size();
+    int maxcount = 0;
+    int element_having_max_freq;
+    for (int i = 0; i < n; i++) {
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (movementData[i] == movementData[j])
+                count++;
+        }
+        if (count > maxcount) {
+            maxcount = count;
+            element_having_max_freq = movementData[i];
+        }
+    }
+    return deducestate(element_having_max_freq);
 }
 
 STATES EMGFilter::deducestate(double movement)
@@ -174,8 +235,12 @@ STATES EMGFilter::deducestate(double movement)
         return FLEXED;
     else if (movement < ROTATING_MAX && movement >= ROTATING_MIN)
         return ROTATING;
+    else {
+        return UNKNOWN;
+    }
         
 }
+
 double EMGFilter::getMovement() {
     return movement;
 }
