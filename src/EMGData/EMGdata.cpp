@@ -4,7 +4,9 @@
 #include <cmath>
 #include <thread>
 #include "EMGdata.h"
-
+#include <cstdlib>
+#include <stdlib.h>
+#include <iostream>
 
 int EMGdata::_start()
 {
@@ -12,8 +14,16 @@ int EMGdata::_start()
 	device.addr = 0x48;
 	device.data_rate = 128;
 	device.pga = PGA_2_048;
-
+     EMG_filter filter;
+     filter.filterOrder = 2;
+	filter.highPassCutoff =20;
+	filter.lowPassCutoff = 20;
+	filter.threshold = 0.1;
+	filter.sampleRate = 200;
+	filter.windowSize = 256;
+	
 	ADS1115::start(device);
+	EMGFilter::set_filter_params(filter);
 	EMGFilter::start();
 	return 0;
 
