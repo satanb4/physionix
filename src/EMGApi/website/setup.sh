@@ -7,7 +7,7 @@ web_dir="/var/www/html"
 
 # Install nginx
 echo 'Installing nginx...'
-apt-get install -y nginx
+sudo apt-get install -y nginx
 echo 'Nginx installed.'
 
 
