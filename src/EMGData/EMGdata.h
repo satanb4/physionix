@@ -29,5 +29,4 @@ public:
 	int _start();
 	std::vector<double> measuredata;
 
-
 };
