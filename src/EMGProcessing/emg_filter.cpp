@@ -47,9 +47,12 @@ void EMGFilter::start_processing() {
 
             // Generate filter coefficients for a butterworth low-pass filter
             lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
+            highPassCoeffs = butterworthLowPassCoeffs(filterOrder, highPassCutoff, sampleRate);
 
+            // Apply high-pass filter
+            std::vector<double> highPassData = filterData(buffer, highPassCoeffs);
             // Apply low-pass filter
-            std::vector<double> lowPassData = filterData(buffer, lowPassCoeffs);
+            std::vector<double> lowPassData = filterData(highPassData, lowPassCoeffs);
 
             // calculate FFT
             std::vector<double> fftData = calculateFFT(lowPassData);
@@ -103,6 +106,33 @@ std::vector<double> EMGFilter::butterworthLowPassCoeffs(int order, double cutoff
 
     #ifdef DEBUG
     std::cout << "butterworthLowPassCoeffs: " << coeffs[0] << " " << coeffs[1] << " " << coeffs[2] << " " << coeffs[3] << " " << coeffs[4] << " " << coeffs[5] << " " << coeffs[6] << std::endl;
+    #endif
+
+    return coeffs;
+}
+
+std::vector<double> EMGFilter::butterworthHighPassCoeffs(int order, double cutoff, int sampleRate) {
+    double theta_c = 2 * M_PI * sampleRate / cutoff;
+    double alpha = sin(theta_c) / (2 * order);
+    std::vector<double> a(order + 1, 0);
+    std::vector<double> b(order + 1, 0);
+    a[0] = 1 + 2 * alpha + 2 * alpha * alpha;
+    a[1] = -2 * (1 + alpha) * cos(theta_c);
+    a[2] = 1 - 2 * alpha + 2 * alpha * alpha;
+    b[0] = alpha * alpha;
+    b[1] = 2 * alpha * alpha;
+    b[2] = alpha * alpha;
+    std::vector<double> coeffs(order * 2 + 1, 0);
+
+    // calculate filter coefficients using bilinear
+    // transformation
+    for (int i = 0; i < order - 1; i++) {
+        coeffs[i] = b[i] / a[0];
+        coeffs[i + order + 1] = a[i] / a[0];
+    }
+
+    #ifdef DEBUG
+    std::cout << "butterworthHighPassCoeffs: " << coeffs[0] << " " << coeffs[1] << " " << coeffs[2] << " " << coeffs[3] << " " << coeffs[4] << " " << coeffs[5] << " " << coeffs[6] << std::endl;
     #endif
 
     return coeffs;
@@ -168,6 +198,10 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
             movement += fftData[i];
         }
     }
+    movement /= fftData.size();
+    movement -= 2*10e4;
+    std::cout<<"movement: "<< movement <<std::endl;
+
     newstate =  deducestate(movement);
     if (currentstate != newstate)
         movementdetect(newstate);
@@ -183,8 +217,12 @@ STATES EMGFilter::deducestate(double movement)
         return FLEXED;
     else if (movement < ROTATING_MAX && movement >= ROTATING_MIN)
         return ROTATING;
+    else {
+        return UNKNOWN;
+    }
         
 }
+
 double EMGFilter::getMovement() {
     return movement;
 }

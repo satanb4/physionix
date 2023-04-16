@@ -37,9 +37,9 @@ int main(int argc, char* argv[]) {
 	std::cout << "Starting Application" << std::endl;
 	EMG_filter filter;
 	filter.filterOrder = 2;
-	filter.highPassCutoff =20;
+	filter.highPassCutoff = 600;
 	filter.lowPassCutoff = 20;
-	filter.threshold = 0.1;
+	filter.threshold = 1500;
 	filter.sampleRate = 200;
 	filter.windowSize = 256;
 	emgfilter.set_filter_params(filter);
