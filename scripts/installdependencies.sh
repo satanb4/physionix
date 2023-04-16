@@ -10,7 +10,7 @@ cmd="dpkg -s i2c-tools"
 if !($cmd | grep "ok installed"); then
     echo "i2c tools not found. Installing..." | tee -a $build_log
     sudo apt-get update
-    sudo apt-get install -y i2c-tools libfcgi-dev libjsoncpp-dev >> $build_log
+    sudo apt-get install -y i2c-tools >> $build_log
 fi
 
 base_dir="$(pwd)"
@@ -59,11 +59,14 @@ echo 'Building jsonfastcgi library...' | tee -a $build_log
 api_dir="${base_dir}/src/EMGApi"
 cgi_dir="${api_dir}/fastcgi"
 if [ -d $cgi_dir ]; then
+    echo "Installing cmake and jsoncpp tools..." | tee -a $build_log
+    sudo apt-get install -y cmake libfcgi-dev libjsoncpp-dev >> $build_log
+    echo "cmake and jsoncpp tools installed." | tee -a $build_log
     echo "Found jsonfastcgi directory. Building..." | tee -a $build_log
     cd $cgi_dir
     cmake CMakeLists.txt
     sudo make install json_fastcgi_web_api.h | tee -a $build_log
-    rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake
+    rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake Makefile install_manifest.txt
     cd $base_dir
     echo "jsonfastcgi build complete." | tee -a $build_log
 else

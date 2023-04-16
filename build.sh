@@ -51,7 +51,7 @@ if [ -d $api_dir ]; then
     cd $api_dir
     cmake CMakeLists.txt
     make
-    mv *.o $api_output $build_dir
+    mv $api_output $build_dir
     rm -rf CMakeFiles CMakeCache.txt cmake_install.cmake Makefile
     echo "Build complete." | tee -a $build_log
     echo "Copying website files..." | tee -a $build_log
