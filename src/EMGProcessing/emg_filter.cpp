@@ -23,14 +23,6 @@ void EMGFilter::set_filter_params(EMG_filter filter)
     running = false;
 }
 
-// Set the data to be processed
-void EMGFilter::setData(const std::vector<double>& data) {
-    std::unique_lock<std::mutex> lock(dataMutex);
-    emgData = data;
-    dataReady = true;
-    dataCond.notify_one();
-}
-
 void EMGFilter::start()
 {
     if(nullptr!=emgThread) return;
@@ -40,7 +32,6 @@ void EMGFilter::start()
 // Start the EMG processing thread
 void EMGFilter::start_processing() {
     running = true;
-    EMGFilter::setData(emgData);
     while(running){
             // add data to circular buffer
             buffer.insert(buffer.end(), emgData.begin(), emgData.end());

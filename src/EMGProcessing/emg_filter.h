@@ -54,7 +54,6 @@ public:
 
     void set_filter_params(EMG_filter);
     double getMovement();
-    void setData(const std::vector<double>& data);
     void start();
     void stop();
     virtual void movementdetect(STATES movement) = 0;
