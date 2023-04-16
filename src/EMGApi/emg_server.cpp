@@ -10,8 +10,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "include/json_fastcgi_web_api.h"
-#include "include/EMGSensor.h"
+#include "json_fastcgi_web_api.h"
+#include "EMGSensor.h"
 #include <jsoncpp/json/json.h>
 
 /**

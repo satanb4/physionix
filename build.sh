@@ -7,6 +7,7 @@ src_dir="${base_dir}/src"
 
 sensor_dir="${src_dir}/EMGSensor"
 processing_dir="${src_dir}/EMGProcessing"
+api_dir="${src_dir}/EMGApi"
 final_build="physionix"
 
 
@@ -42,3 +43,17 @@ cd $src_dir
 make
 mv *.o $final_build $build_dir
 echo "Build complete." | tee -a $build_log
+
+# Build the EMGApi
+echo "Building EMGApi..." | tee -a $build_log
+api_output="${api_dir}/PhysionixServer"
+if [ -d $api_dir ]; then
+    cd $api_dir
+    cmake CMakeLists.txt
+    make
+    mv *.o $api_output $build_dir
+    rm -rf CMakeFiles CMakeCache.txt cmake_install.cmake Makefile
+    echo "Build complete." | tee -a $build_log
+else
+    echo "EMGApi not found. Skipping..." | tee -a $build_log
+fi
