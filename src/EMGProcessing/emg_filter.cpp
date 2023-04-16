@@ -2,17 +2,21 @@
 #include <vector>
 #include <cmath>
 #include <chrono>
-#include <thread>
 #include <fftw3.h>
+#include <cstdlib>
+#include <stdlib.h>
 #include "emg_filter.h"
 
-EMGFilter::EMGFilter(int sampleRate, int windowSize, int filterOrder, double lowPassCutoff, double highPassCutoff, double threshold) {
-    this->sampleRate = sampleRate;
-    this->windowSize = windowSize;
-    this->filterOrder = filterOrder;
-    this->lowPassCutoff = lowPassCutoff;
-    this->highPassCutoff = highPassCutoff;
-    this->threshold = threshold;
+
+void EMGFilter::set_filter_params(EMG_filter filter)
+{
+    
+    this->sampleRate = filter.sampleRate;
+    this->windowSize = filter.windowSize;
+    this->filterOrder = filter.filterOrder;
+    this->lowPassCutoff = filter.lowPassCutoff;
+    this->highPassCutoff = filter.highPassCutoff;
+    this->threshold = filter.threshold;
     buffer = std::vector<double>(windowSize, 0);
     lowPassCoeffs = butterworthLowPassCoeffs(filterOrder, lowPassCutoff, sampleRate);
     running = false;
@@ -30,7 +34,6 @@ void EMGFilter::setData(const std::vector<double>& data) {
 void EMGFilter::start(std::vector<double>& emgData) {
     running = true;
     EMGFilter::setData(emgData);
-    emgThread = std::thread([this, &emgData] {
         while (running) {
             // add data to circular buffer
             buffer.insert(buffer.end(), emgData.begin(), emgData.end());
@@ -54,15 +57,14 @@ void EMGFilter::start(std::vector<double>& emgData) {
             // sleep for a short time to avoid high CPU usage
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-    });
 }
 
 // Stop the EMG processing thread
 void EMGFilter::stop() {
     running = false;
-    if (emgThread.joinable()) {
+    /*if (emgThread.joinable()) {
         emgThread.join();
-    }
+    }*/
 }
 
 // Generate filter coefficients for a butterworth low-pass filter
@@ -145,9 +147,11 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
     newstate =  deducestate(movement);
     if (currentstate != newstate)
         movementdetect(newstate);
+    if (newstate == RELAXED)
+        movementdetect(RELAXED);
 }
 
-STATES deducestate(double movement)
+STATES EMGFilter::deducestate(double movement)
 {
     if (movement < RELAXED_MAX && movement >= RELAXED_MIN)
         return RELAXED;

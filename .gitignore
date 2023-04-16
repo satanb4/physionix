@@ -35,9 +35,4 @@ build/
 
 # VScode Files
 .vscode
-
-# Python Files
-*.pyc
-__pycache__
-venv/
-pyenv/
+.vs/
