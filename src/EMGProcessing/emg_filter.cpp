@@ -23,6 +23,16 @@ void EMGFilter::set_filter_params(EMG_filter filter)
     running = false;
 }
 
+// Stop the EMG processing thread
+void EMGFilter::stop() {
+    running = false;
+    if (emgThread->joinable()) {
+        emgThread->join();
+        delete emgThread;
+        emgThread = nullptr;
+    }
+}
+
 void EMGFilter::start()
 {
     if(nullptr!=emgThread) return;
@@ -63,16 +73,6 @@ void EMGFilter::start_processing() {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
         
-}
-
-// Stop the EMG processing thread
-void EMGFilter::stop() {
-    running = false;
-    if (emgThread->joinable()) {
-        emgThread->join();
-        delete emgThread;
-        emgThread = nullptr;
-    }
 }
 
 // Generate filter coefficients for a butterworth low-pass filter
