@@ -1,5 +1,6 @@
 #include "../EMGProcessing/emg_filter.h"
 #include "../EMGSensor/ADS1115.h"
+#include "../EMGApi/EMGSensor.h"
 
 #ifndef EMGDATA_H
 

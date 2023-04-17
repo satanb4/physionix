@@ -32,7 +32,7 @@ void EMGdata::_start()
 {
 	printf("\nStarting app");
 	
-	startEmgApi(mainRunning);
+	startEmgApi();
 	// Start the data acquisition in the background
 	daqthread = std::thread(&EMGdata::startDAQ,this);
 	std::system("./PhysionixServer");
@@ -42,7 +42,7 @@ void EMGdata::_start()
 void EMGdata::_stop()
 {
 	printf("\nExiting app");
-	stopEmgApi(mainRunning);
+	stopEmgApi();
 	daqthread.join();
 	ADS1115::stop();
 	EMGFilter::stop();
