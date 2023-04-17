@@ -14,8 +14,8 @@ int EMGdata::_start()
 	device.addr = 0x48;
 	device.data_rate = 128;
 	device.pga = PGA_2_048;
-     EMG_filter filter;
-     filter.filterOrder = 2;
+    EMG_filter filter;
+    filter.filterOrder = 2;
 	filter.highPassCutoff =20;
 	filter.lowPassCutoff = 20;
 	filter.threshold = 0.1;
