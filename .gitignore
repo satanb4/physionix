@@ -36,3 +36,15 @@ build/
 # VScode Files
 .vscode
 .vs/
+
+# CMake Files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# Python Files
+*.pyc
+*.pyo
+__pycache__/
+venv/
+pyenv/

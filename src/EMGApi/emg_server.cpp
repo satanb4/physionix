@@ -1,12 +1,3 @@
-/*
- * Copyright (c) 2013-2023  Bernd Porr <mail@berndporr.me.uk>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License.
- *
- */
-
 #include <string.h>
 #include <unistd.h>
 
@@ -14,28 +5,16 @@
 #include "EMGSensor.h"
 #include <jsoncpp/json/json.h>
 
-/**
- * Flag to indicate that we are running.
- * Needed later to quit the idle loop.
- **/
+#define DEBUG
+
 bool mainRunning = true;
 
-/**
- * Handler when the user has pressed ctrl-C
- * send HUP via the kill command.
- **/
 void sigHandler(int sig) { 
 	if((sig == SIGHUP) || (sig == SIGINT)) {
 		mainRunning = false;
 	}
 }
 
-
-/** 
- * Sets a signal handler so that you can kill
- * the background process gracefully with:
- * kill -HUP <PID>
- **/
 void setHUPHandler() {
 	struct sigaction act;
 	memset (&act, 0, sizeof (act));
@@ -57,7 +36,7 @@ void setHUPHandler() {
  * in a real application the data would be stored
  * in a database and/or triggers events and other things!
  **/
-class SENSORfastcgicallback : public SensorCallback {
+class SENSORfastcgicallback: public SensorCallback {
 public:
 	std::deque<float> emgBuffer;
 	std::deque<long> timeBuffer;
@@ -72,7 +51,7 @@ public:
 	 * convert the raw ADC data to emg_data
 	 * and store it in a variable.
 	 **/
-	virtual void hasSample(float v) {
+	void hasSample(float v) {
 		lastValue = v;
 		emgBuffer.push_back(v);
 		if (emgBuffer.size() > maxBufSize) emgBuffer.pop_front();
@@ -184,13 +163,13 @@ public:
 	SENSORfastcgicallback* sensorfastcgi;
 };
 	
-
+#ifdef DEBUG
 // Main program
 int main(int argc, char *argv[]) {
+	std::cout << "Starting the Main Server" << std::endl;
 	// getting all the ADC related acquistion set up
-	EMGSensor sensorcomm;
 	SENSORfastcgicallback sensorfastcgicallback;
-	sensorcomm.setCallback(&sensorfastcgicallback);
+	// sensorcomm.setCallback(&sensorfastcgicallback);
 
 	// Callback handler for data which arrives from the the
 	// browser via jquery json post requests:
@@ -211,13 +190,8 @@ int main(int argc, char *argv[]) {
 	jsoncgiHandler.start(&fastCGIADCCallback,&postCallback,
 							    "/tmp/sensorsocket");
 
-	// starting the data acquisition at the given sampling rate
-	sensorcomm.start();
-
 	// catching Ctrl-C or kill -HUP so that we can terminate properly
 	setHUPHandler();
-
-	fprintf(stderr,"'%s' up and running.\n",argv[0]);
 
 	// Just do nothing here and sleep. It's all dealt with in threads!
 	// At this point for example a GUI could be started such as QT
@@ -225,10 +199,8 @@ int main(int argc, char *argv[]) {
 	// sets mainRunning to zero.
 	while (mainRunning) sleep(1);
 
-	fprintf(stderr,"'%s' shutting down.\n",argv[0]);
-
-	sensorcomm.stop();
 	jsoncgiHandler.stop();
 
 	return 0;
 }
+#endif
