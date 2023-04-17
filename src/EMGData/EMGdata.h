@@ -27,6 +27,8 @@ private:
     }
     void startDAQ();
     std::thread daqthread;
+    void startEmgApi();
+    void stopEmgApi();
 
 public:
     EMGdata() {};

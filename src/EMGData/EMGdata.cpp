@@ -48,7 +48,7 @@ void EMGdata::_stop()
 	EMGFilter::stop();
 }
 
-void startEmgApi(mainrunning) {
+void EMGdata::startEmgApi() {
 	EMGdata emgdata;
 
 	SENSORfastcgicallback sensorfastcgicallback;
@@ -73,7 +73,7 @@ void startEmgApi(mainrunning) {
 	
 }
 
-void stopEmgApi(mainrunning) {
+void EMGdata::stopEmgApi() {
 	if (mainRunning) {
 		mainRunning = false;
 		jsoncgiHandler.stop();
