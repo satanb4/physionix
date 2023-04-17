@@ -40,7 +40,7 @@ private:
 
     virtual void movementdetect(STATES movement)
     {
-        //invoke te motoro actuation code
+        //invoke the motor actuation code
     }
     void startDAQ();
     std::thread daqthread;
