@@ -1,10 +1,13 @@
 ![physionix-image](media/Physionix-logo/cover.png)
 
-![GitHub language count](https://img.shields.io/github/languages/count/satanb4/physionix?style=for-the-badge)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/satanb4/physionix?style=for-the-badge)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/satanb4/physionix/c-cpp.yml?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/satanb4/physionix?style=for-the-badge)
 ![GitHub repo size](https://img.shields.io/github/repo-size/satanb4/physionix?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/satanb4/physionix?style=for-the-badge)
+
+![GitHub language count](https://img.shields.io/github/languages/count/satanb4/physionix?style=for-the-badge)
+![GitHub top language](https://img.shields.io/github/languages/top/satanb4/physionix?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/satanb4/physionix?style=for-the-badge)  
+
 ![GitHub forks](https://img.shields.io/github/forks/satanb4/physionix?style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/satanb4/physionix?style=for-the-badge)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/satanb4/physionix?style=for-the-badge)
