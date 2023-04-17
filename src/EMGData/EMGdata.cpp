@@ -7,7 +7,7 @@
 #include "../EMGApi/EMGSensor.h"
 #include <cstdlib>
 
-bool mainRunning = false;
+//bool mainRunning = false;
 
 void EMGdata::startDAQ()
 {
@@ -35,7 +35,8 @@ void EMGdata::_start()
 	startEmgApi();
 	// Start the data acquisition in the background
 	daqthread = std::thread(&EMGdata::startDAQ,this);
-	std::system("./PhysionixServer");
+	startEmgApi();
+	//std::system("./PhysionixServer");
 	startDAQ();
 
 }
@@ -44,12 +45,13 @@ void EMGdata::_stop()
 	printf("\nExiting app");
 	stopEmgApi();
 	daqthread.join();
+	scb.stop();
 	ADS1115::stop();
 	EMGFilter::stop();
 }
 
 void EMGdata::startEmgApi() {
-	EMGdata emgdata;
+	/*EMGdata emgdata;
 
 	SENSORfastcgicallback sensorfastcgicallback;
 	// Create the sensor
@@ -69,14 +71,15 @@ void EMGdata::startEmgApi() {
 
 	// catching Ctrl-C or kill -HUP so that we can terminate properly
 	setHUPHandler();
-	while (mainRunning) sleep(1);
+	while (mainRunning) sleep(1);*/
+	scb.start();
 	
 }
 
 void EMGdata::stopEmgApi() {
-	if (mainRunning) {
-		mainRunning = false;
-		jsoncgiHandler.stop();
-	}
+	//if (mainRunning) {
+		//mainRunning = false;
+		//jsoncgiHandler.stop();
+	//}
 }
 

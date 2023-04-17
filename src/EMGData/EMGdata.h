@@ -4,13 +4,14 @@
 
 #ifndef EMGDATA_H
 
-class EMGdata : public ADS1115, public EMGFilter
+class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 {
 private:
     std::vector<double> measuredata;
-
+    SensorCallback scb;
     virtual void newdata(float* data)
     {
+        scb.hasSample(*data);
 #ifdef DEBUG
         printf("\new data is %f", *data+23);
 #endif // DEBUG
