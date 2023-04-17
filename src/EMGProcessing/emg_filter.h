@@ -1,3 +1,12 @@
+/**
+ * @file emg_filter.h
+ * @brief Header file for the EMGFilter class
+ * @author @satanb4
+ * @version 1.0
+ * @date 2023-04-15
+ * This is the header file for the EMGFilter class. It contains the basic functionality for the filter. 
+*/
+
 #include <fftw3.h>
 #include <iostream>
 #include <vector>
@@ -29,6 +38,7 @@
 #define DEFAULT_THRESHOLD           20
 #define DEFAULT_MOVEMENTDATA_SIZE   5000
 
+/// @brief The states of the muscle
 enum STATES
 {
     RELAXED,
@@ -36,6 +46,8 @@ enum STATES
     ROTATING,
     UNKNOWN
 };
+
+/// @brief The structure to hold the filter parameters
 struct EMG_filter
 {
     int     sampleRate      =       DEFAULT_SAMPLERATE;
@@ -47,6 +59,12 @@ struct EMG_filter
     int     aggregateDataLimit =      DEFAULT_MOVEMENTDATA_SIZE;
 
 };
+
+/**
+ * @brief The EMGFilter class
+ * This class is the header for the base class of the EMG filter. It contains the basic functionality for the filter.
+ * The class is abstract and the derived class should implement the movementdetect function.
+*/
 class EMGFilter {
 public:
     EMGFilter() {}
