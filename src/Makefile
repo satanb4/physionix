@@ -1,5 +1,5 @@
 test: ADS1115.o emg_filter.o emg_server.o EMGdata.o main.o
-	g++ -Wall -pthread ADS1115.o emg_filter.o EMGdata.o emg_server.o main.o -o physionix -lpigpio -lfftw3
+	g++ -Wall -pthread ADS1115.o emg_filter.o emg_server.o EMGdata.o main.o -o physionix -lpigpio -lfftw3 -l:libfcgi.a -ljsoncpp
 ADS1115.o: EMGSensor/ADS1115.cpp EMGSensor/ADS1115.h
 	g++ -c EMGSensor/ADS1115.cpp
 emg_filter.o: EMGProcessing/emg_filter.cpp EMGProcessing/emg_filter.h

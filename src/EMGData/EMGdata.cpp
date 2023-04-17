@@ -6,7 +6,6 @@
  * @date 2023-04-14
  * @paragraph This is the implementation file for the EMGdata class. It contains the implementation of the start and stop functions.
  */
-
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -15,7 +14,7 @@
 #include "../EMGApi/EMGSensor.h"
 #include <cstdlib>
 
-bool mainRunning = false;
+//bool mainRunning = false;
 
 /**
  * @brief The constructor for the EMGdata class
@@ -47,55 +46,28 @@ void EMGdata::startDAQ()
 void EMGdata::_start()
 {
 	printf("\nStarting app");
-	
-	startEmgApi(mainRunning);
-	// Start the data acquisition in the background
-	daqthread = std::thread(&EMGdata::startDAQ,this);
-	std::system("./PhysionixServer");
 	startDAQ();
+	startEmgApi();
 
 }
-
 /// @brief Stops the web application thread and the data acquisition thread
 void EMGdata::_stop()
 {
 	printf("\nExiting app");
-	stopEmgApi(mainRunning);
-	daqthread.join();
+	stopEmgApi();
+	scb.stop();
 	ADS1115::stop();
 	EMGFilter::stop();
 }
 
 /// @brief The function to callback the data to the web application
-void startEmgApi(mainrunning) {
-	EMGdata emgdata;
-
-	SENSORfastcgicallback sensorfastcgicallback;
-	// Create the sensor
-	EMGSensor sensor;
-	SENSORPOSTCallback postCallback(&sensorfastcgicallback);
-	// Set the callback
-	sensor.setCallback(&postCallback);
-	JSONCGIADCCallback fastCGIADCCallback(&sensorfastcgicallback);
-
-	// creating an instance of the fast CGI handler
-	JSONCGIHandler jsoncgiHandler;
-
-	// starting the fastCGI handler with the callback and the
-	// socket for nginx.
-	jsoncgiHandler.start(&fastCGIADCCallback,&postCallback,
-							    "/tmp/sensorsocket");
-
-	// catching Ctrl-C or kill -HUP so that we can terminate properly
-	setHUPHandler();
-	while (mainRunning) sleep(1);
+void EMGdata::startEmgApi() {
+	
+	scb.start();
 	
 }
 
-void stopEmgApi(mainrunning) {
-	if (mainRunning) {
-		mainRunning = false;
-		jsoncgiHandler.stop();
-	}
+void EMGdata::stopEmgApi() {
+	
 }
 
