@@ -1,4 +1,11 @@
-
+/**
+ * @file EMGdata.cpp
+ * @brief The implementation file for the EMGdata class
+ * @author @midhunjac
+ * @version 1.0
+ * @date 2023-04-14
+ * @paragraph This is the implementation file for the EMGdata class. It contains the implementation of the start and stop functions.
+ */
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -9,6 +16,13 @@
 
 //bool mainRunning = false;
 
+/**
+ * @brief The constructor for the EMGdata class
+ * @param None
+ * @return None
+ * @paragraph This is the constructor for the EMGdata class. It initializes the variables. Also declaring a thread for the data acquisition.
+ * @bug No known bugs.
+*/
 void EMGdata::startDAQ()
 {
 	ADS1115_device device;
@@ -28,6 +42,7 @@ void EMGdata::startDAQ()
 	EMGFilter::start();
 }
 
+/// @brief Starts the web application thread and the data acquisition thread
 void EMGdata::_start()
 {
 	printf("\nStarting app");
@@ -35,6 +50,7 @@ void EMGdata::_start()
 	startEmgApi();
 
 }
+/// @brief Stops the web application thread and the data acquisition thread
 void EMGdata::_stop()
 {
 	printf("\nExiting app");
@@ -44,6 +60,7 @@ void EMGdata::_stop()
 	EMGFilter::stop();
 }
 
+/// @brief The function to callback the data to the web application
 void EMGdata::startEmgApi() {
 	
 	scb.start();
