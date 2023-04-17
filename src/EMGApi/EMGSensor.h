@@ -1,7 +1,7 @@
 #ifndef __EMGSensor_H
 #define __EMGSensor_H
 
-#define DEBUG
+// #define DEBUG
 
 /**
  * Copyright (c) 2021  Bernd Porr <mail@berndporr.me.uk>

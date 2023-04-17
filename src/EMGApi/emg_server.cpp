@@ -5,7 +5,7 @@
 #include "EMGSensor.h"
 #include <jsoncpp/json/json.h>
 
-#define DEBUG
+// #define DEBUG
 
 bool mainRunning = true;
 
