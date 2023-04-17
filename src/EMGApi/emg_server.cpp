@@ -166,6 +166,7 @@ public:
 #ifdef DEBUG
 // Main program
 int main(int argc, char *argv[]) {
+	std::cout << "Starting the Main Server" << std::endl;
 	// getting all the ADC related acquistion set up
 	SENSORfastcgicallback sensorfastcgicallback;
 	// sensorcomm.setCallback(&sensorfastcgicallback);
