@@ -1,0 +1,14 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: GlacialIndifference-Italic
+font link: https://hanken.co/product/hk-grotesk/
+font author: Hanken Design Co.
+font author site: https://hanken.co/
+
+
+icon designer: leo-graph.com
+icon designer link: /graphinedesign
+        
+{"bg":"transparent","icon-gradient-0":"#E90DCA","icon-gradient-1":"#1536F1","font":"#000000","slogan":"#141414"}
+      
