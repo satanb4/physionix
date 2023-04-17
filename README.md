@@ -42,6 +42,7 @@ Just follow the steps below:
   ./build.sh
   ```
 - The application will be present in the `build` folder
+- Generate Doxygen documentation for the project using `$ doxygen Doxyfile`
 
 ## Features
 - :white_check_mark: Build Scripts for Raspberry Pi and Linux
