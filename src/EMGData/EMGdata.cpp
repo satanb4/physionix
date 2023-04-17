@@ -7,6 +7,7 @@
 #include "../EMGApi/EMGSensor.h"
 #include <cstdlib>
 
+bool mainRunning = false;
 
 void EMGdata::startDAQ()
 {
@@ -30,8 +31,8 @@ void EMGdata::startDAQ()
 void EMGdata::_start()
 {
 	printf("\nStarting app");
-	// Pass the callback to the sensor
-	sensor.setCallback(this);
+	
+	startEmgApi(mainRunning);
 	// Start the data acquisition in the background
 	daqthread = std::thread(&EMGdata::startDAQ,this);
 	std::system("./PhysionixServer");
@@ -41,8 +42,41 @@ void EMGdata::_start()
 void EMGdata::_stop()
 {
 	printf("\nExiting app");
-	//daqthread.join();
+	stopEmgApi(mainRunning);
+	daqthread.join();
 	ADS1115::stop();
 	EMGFilter::stop();
+}
+
+void startEmgApi(mainrunning) {
+	EMGdata emgdata;
+
+	SENSORfastcgicallback sensorfastcgicallback;
+	// Create the sensor
+	EMGSensor sensor;
+	SENSORPOSTCallback postCallback(&sensorfastcgicallback);
+	// Set the callback
+	sensor.setCallback(&postCallback);
+	JSONCGIADCCallback fastCGIADCCallback(&sensorfastcgicallback);
+
+	// creating an instance of the fast CGI handler
+	JSONCGIHandler jsoncgiHandler;
+
+	// starting the fastCGI handler with the callback and the
+	// socket for nginx.
+	jsoncgiHandler.start(&fastCGIADCCallback,&postCallback,
+							    "/tmp/sensorsocket");
+
+	// catching Ctrl-C or kill -HUP so that we can terminate properly
+	setHUPHandler();
+	while (mainRunning) sleep(1);
+	
+}
+
+void stopEmgApi(mainrunning) {
+	if (mainRunning) {
+		mainRunning = false;
+		jsoncgiHandler.stop();
+	}
 }
 
