@@ -14,6 +14,8 @@
 #include "EMGSensor.h"
 #include <jsoncpp/json/json.h>
 
+// #define DEBUG
+
 /**
  * Flag to indicate that we are running.
  * Needed later to quit the idle loop.
@@ -57,7 +59,7 @@ void setHUPHandler() {
  * in a real application the data would be stored
  * in a database and/or triggers events and other things!
  **/
-class SENSORfastcgicallback : public SensorCallback {
+class SENSORfastcgicallback: public SensorCallback {
 public:
 	std::deque<float> emgBuffer;
 	std::deque<long> timeBuffer;
@@ -72,7 +74,7 @@ public:
 	 * convert the raw ADC data to emg_data
 	 * and store it in a variable.
 	 **/
-	virtual void hasSample(float v) {
+	void hasSample(float v) {
 		lastValue = v;
 		emgBuffer.push_back(v);
 		if (emgBuffer.size() > maxBufSize) emgBuffer.pop_front();
@@ -184,7 +186,7 @@ public:
 	SENSORfastcgicallback* sensorfastcgi;
 };
 	
-
+#ifdef DEBUG
 // Main program
 int main(int argc, char *argv[]) {
 	// getting all the ADC related acquistion set up
@@ -232,3 +234,4 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
+#endif

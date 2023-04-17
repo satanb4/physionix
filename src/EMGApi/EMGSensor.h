@@ -1,6 +1,8 @@
 #ifndef __EMGSensor_H
 #define __EMGSensor_H
 
+// #define DEBUG
+
 /**
  * Copyright (c) 2021  Bernd Porr <mail@berndporr.me.uk>
  **/
@@ -15,17 +17,12 @@
  **/
 class SensorCallback {
 public:
-	/**
-	 * Called after a sample has arrived.
-	 **/
-	virtual void hasSample(float sample) = 0;
+	virtual void hasSample(float sample) {
+		(void)sample;
+	};
 };
 
-
-/**
- * This class reads data from a fake sensor in the background
- * and calls a callback function whenever data is available.
- **/
+#ifdef DEBUG
 class EMGSensor {
 
 public:
@@ -68,9 +65,8 @@ private:
 	void fakeEvent() {
 		float value = sin(t) * 5 + 20;
 		t += 0.1;
-		if (nullptr != sensorCallback) {
-                        sensorCallback->hasSample(value);
-                }
+		if (sensorCallback != nullptr) {
+			sensorCallback->hasSample(value);
         }
 
 	/**
@@ -93,7 +89,7 @@ private:
 	float t = 0;
 	bool running = false;
 	std::thread thr;
-};
-
+}; 
+#endif
 
 #endif

@@ -28,10 +28,9 @@ void EMGdata::startDAQ()
 
 void EMGdata::_start()
 {
-	//daqthread = std::thread(&EMGdata::startDAQ,this);
-	//std::system("./PhysionixServer");
+	// daqthread = std::thread(&EMGdata::startDAQ,this);
+	// std::system("./PhysionixServer");
 	startDAQ();
-	
 
 }
 void EMGdata::_stop()

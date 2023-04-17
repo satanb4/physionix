@@ -4,14 +4,15 @@
 
 class EMGdata: public ADS1115, public EMGFilter //public SensorCallback
 {
-	//SensorCallback* sensorcb;/*do not uncomment. will result in crash as of now.need to fix*/
+private:
+	// SensorCallback* sensorcb; /*do not uncomment. will result in crash as of now.need to fix*/
 	
 	virtual void newdata(float* data)
 	{
 #ifdef DEBUG
 		printf("\new data is %f", *data+23);
 #endif // DEBUG
-		//sensorcb->hasSample(*data);
+		// sensorcb->hasSample(*data);
 		measuredata.push_back(*data);
 		if (measuredata.size() >= 256)
 		{
@@ -34,5 +35,4 @@ EMGdata() {};
 	void _start();
 	void _stop();
 	std::vector<double> measuredata;
-
 };
