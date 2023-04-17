@@ -48,6 +48,15 @@
 #define PGA_POS				9
 #define ANALOG_INPUT_POS	12
 
+/**
+ * @brief The ADS1115_device struct for the ADS1115 with the ADS1115_device. This struct contains the configuration of the ADS1115.
+ * @param addr The address of the ADS1115
+ * @param data_rate The data rate of the ADS1115
+ * @param pga The programmable gain amplifier of the ADS1115
+ * @param input_channel The analog input channel of the ADS1115
+ * The values can be set to the default values or changed to the desired values.
+*/
+
 struct ADS1115_device
 {
 	uint8_t addr = AD1115_ADDR;
@@ -56,6 +65,15 @@ struct ADS1115_device
 	uint8_t input_channel = ANALOG_INPUT0;
 };
 
+/**
+ * @brief The ADS1115 class for the ADS1115 with the ADS1115_device. This class contains the configuration of the ADS1115.
+ * @param device The ADS1115_device struct
+ * @param CONVERSION_REG The conversion register of the ADS1115
+ * @param CONFIG_REG The configuration register of the ADS1115
+ * @param Lo_thresh_REG The low threshold register of the ADS1115
+ * @param Hi_thresh_REG The high threshold register of the ADS1115
+ * The values can be set to the default values or changed to the desired values. The class also has the structs for the start and stop functions.
+*/
 class ADS1115
 {
 public:

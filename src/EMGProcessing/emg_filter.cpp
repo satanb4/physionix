@@ -1,3 +1,12 @@
+/**
+ * @file emg_filter.cpp
+ * @brief Source file for the EMGFilter class
+ * @author @satanb4
+ * @version 1.0
+ * @date 2023-04-15
+ * This is the source file for the EMGFilter class. It contains the implementation of the base functionality for the filter. 
+*/
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -10,6 +19,19 @@
 
 // #define DEBUG
 
+/**
+ * @brief Construct a new EMG Filter::EMG Filter object
+ * @param filter The filter parameters
+ * @param sampleRate The sample rate of the EMG data
+ * @param windowSize The window size of the EMG data
+ * @param filterOrder The filter order of the EMG data
+ * @param lowPassCutoff The low pass cutoff of the EMG data
+ * @param highPassCutoff The high pass cutoff of the EMG data
+ * @param threshold The threshold of the EMG data
+ * @param aggregateDataLimit The aggregate data limit of the EMG data
+ * @private buffer The buffer of the EMG data
+ * @private running The running of the EMG data [bool]
+*/
 void EMGFilter::set_filter_params(EMG_filter filter)
 {
     this->sampleRate = filter.sampleRate;
@@ -23,9 +45,13 @@ void EMGFilter::set_filter_params(EMG_filter filter)
     running = false;
 }
 
-// Stop the EMG processing thread
+/**
+ * @brief Destroy the EMG Filter::EMG Filter object
+ * Passes the running flag to false and joins the thread
+*/
 void EMGFilter::stop() {
     running = false;
+    // Stop the EMG processing thread
     if (emgThread->joinable()) {
         emgThread->join();
         delete emgThread;
@@ -33,13 +59,15 @@ void EMGFilter::stop() {
     }
 }
 
+/// @brief  Start the EMG processing thread
 void EMGFilter::start()
 {
     if(nullptr!=emgThread) return;
     emgThread = new std::thread(&EMGFilter::start_processing,this);
     
 }
-// Start the EMG processing thread
+
+/// @brief The main processing loop
 void EMGFilter::start_processing() {
     running = true;
     while(running){
@@ -75,7 +103,19 @@ void EMGFilter::start_processing() {
         
 }
 
-// Generate filter coefficients for a butterworth low-pass filter
+/**
+ * @brief Generate filter coefficients for a butterworth low-pass filter
+ * @param order The order of the filter
+ * @param cutoff The cutoff frequency of the filter
+ * @param sampleRate The sample rate of the EMG data
+ * @return std::vector<double> The filter coefficients
+ * @private a The a coefficients of the filter
+ * @private b The b coefficients of the filter
+ * @private coeffs The filter coefficients
+ * @private theta_c The cutoff frequency in radians
+ * @private alpha The alpha coefficient
+ * The butterworthFilterCoeffs function generates the filter coefficients for a butterworth low-pass filter using the bilinear transform.
+*/
 std::vector<double> EMGFilter::butterworthLowPassCoeffs(int order, double cutoff, int sampleRate) {
     double theta_c = 2 * M_PI * cutoff / sampleRate;
     double alpha = sin(theta_c) / (2 * order);
@@ -103,6 +143,19 @@ std::vector<double> EMGFilter::butterworthLowPassCoeffs(int order, double cutoff
     return coeffs;
 }
 
+/**
+ * @brief Generate filter coefficients for a butterworth high-pass filter
+ * @param order The order of the filter
+ * @param cutoff The cutoff frequency of the filter
+ * @param sampleRate The sample rate of the EMG data
+ * @return std::vector<double> The filter coefficients
+ * @private a The a coefficients of the filter
+ * @private b The b coefficients of the filter
+ * @private coeffs The filter coefficients
+ * @private theta_c The cutoff frequency in radians
+ * @private alpha The alpha coefficient
+ * This function generates the filter coefficients for a butterworth high-pass filter using the bilinear transform and the low-pass filter coefficients.
+*/
 std::vector<double> EMGFilter::butterworthHighPassCoeffs(int order, double cutoff, int sampleRate) {
     double theta_c = 2 * M_PI * sampleRate / cutoff;
     double alpha = sin(theta_c) / (2 * order);
@@ -131,7 +184,16 @@ std::vector<double> EMGFilter::butterworthHighPassCoeffs(int order, double cutof
 }
 
 
-// FFT function
+/**
+ * @brief Calculate the FFT of the given data
+ * @param data The data to be filtered
+ * @return std::vector<double> The filtered data
+ * @private n The size of the data
+ * @private in The input array for FFTW
+ * @private out The output array for FFTW
+ * @private plan The FFTW plan
+ * This function calculates the FFT of the given data using FFTW3 library.
+*/
 std::vector<double> EMGFilter::calculateFFT(const std::vector<double>&  data) {
     int n = data.size();
 
@@ -164,7 +226,14 @@ std::vector<double> EMGFilter::calculateFFT(const std::vector<double>&  data) {
     return fftData;
 }
 
-// Filter data using IIR filter
+/**
+ * @brief Filter the given data using the given filter coefficients
+ * @param data The data to be filtered
+ * @param coeffs The filter coefficients
+ * @return std::vector<double> The filtered data
+ * @private filteredData The filtered data
+ * This function filters the given data using the given filter coefficients.
+*/
 std::vector<double> EMGFilter::filterData(const std::vector<double>& data, const std::vector<double>& coeffs) {
     std::vector<double> filteredData(data.size(), 0);
     for (int i = 0; i < data.size(); i++) {
@@ -182,7 +251,14 @@ std::vector<double> EMGFilter::filterData(const std::vector<double>& data, const
     return filteredData;
 }
 
-// Extract movement from FFT data
+/**
+ * @brief Extract the movement from the given FFT data
+ * @param fftData The FFT data
+ * @param threshold The threshold for movement
+ * @return double The movement
+ * @private movement The movement
+ * This function extracts the movement from the given FFT data.
+*/
 double EMGFilter::extractMovement(const std::vector<double>& fftData, double threshold) {
     double movement = 0;
     for (int i = 0; i < fftData.size(); i++) {
@@ -209,6 +285,15 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
     return movement;
 }
 
+/**
+ * @brief Aggregate the movement data
+ * @param movementData The movement data
+ * @return double  The highest frequency element corresponding to the state
+ * @private n The size of the data
+ * @private maxcount The maximum count
+ * @private element_having_max_freq The element having maximum frequency
+ * This function aggregates the movement data and figures out the highest frequency element then returns the state deduced from that element.
+*/
 STATES EMGFilter::aggregateMovement(std::vector<double>& movementData) {
     int n = movementData.size();
     int maxcount = 0;
@@ -227,6 +312,18 @@ STATES EMGFilter::aggregateMovement(std::vector<double>& movementData) {
     return deducestate(element_having_max_freq);
 }
 
+/**
+ * @brief Deduce the state from the given movement
+ * @param movement The movement
+ * @return double The state
+ * @private RELAXED_MAX The maximum value for relaxed state
+ * @private RELAXED_MIN The minimum value for relaxed state
+ * @private FLEXED_MAX The maximum value for flexed state
+ * @private FLEXED_MIN The minimum value for flexed state
+ * @private ROTATING_MAX The maximum value for rotating state
+ * @private ROTATING_MIN The minimum value for rotating state
+ * This function deduces the state from the given movement.
+*/
 STATES EMGFilter::deducestate(double movement)
 {
     if (movement < RELAXED_MAX && movement >= RELAXED_MIN)
@@ -241,6 +338,8 @@ STATES EMGFilter::deducestate(double movement)
         
 }
 
+/// @brief Get the movement
+/// @return double The movement
 double EMGFilter::getMovement() {
     return movement;
 }

@@ -48,3 +48,8 @@ cmake_install.cmake
 __pycache__/
 venv/
 pyenv/
+
+# Doxygen Files
+doc/
+html/
+latex/

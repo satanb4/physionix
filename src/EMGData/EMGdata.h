@@ -12,9 +12,7 @@ private:
     virtual void newdata(float* data)
     {
         scb.hasSample(*data);
-#ifdef DEBUG
         //printf("\new data is %f", *data+23);
-#endif //DEBUG
         measuredata.push_back(*data);
         if (measuredata.size() >= 256)
         {
@@ -25,7 +23,7 @@ private:
 
     virtual void movementdetect(STATES movement)
     {
-        //invoke the motor actuation code
+        //invoke te motoro actuation code
     }
     void startDAQ();
     std::thread daqthread;

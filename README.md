@@ -1,4 +1,4 @@
-![physionix-image](media/Physionix-logo/cover.png)
+![physionix-image](media/Physionix-logo/cover-whitebg.png)
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/satanb4/physionix/c-cpp.yml?style=for-the-badge)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/satanb4/physionix?style=for-the-badge)
@@ -42,6 +42,7 @@ Just follow the steps below:
   ./build.sh
   ```
 - The application will be present in the `build` folder
+- Generate Doxygen documentation for the project using `$ doxygen Doxyfile`
 
 ## Features
 - :white_check_mark: Build Scripts for Raspberry Pi and Linux
@@ -67,12 +68,15 @@ Just follow the steps below:
 | :white_check_mark: WebAPI Module              | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
 | :white_check_mark: Build Scripts (Sh)/ README | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
 | :white_check_mark: Github Actions             | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
+| :white_check_mark: Doxygen and In-Line docs   | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
 | :white_check_mark: EMG Actuation Module       | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
 | :white_check_mark: High-level Diagrams        | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
 | :white_check_mark: Media and Marketings       | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
 
 ### Schematics
 ![Schematics](https://user-images.githubusercontent.com/123675167/229873061-d8c7acad-f5ce-4a66-b9ea-08cc2b337cba.png)
+![UML](https://github.com/Sumanth0201/physionix/blob/main/flow%20diagram.png)
+
 
   
 # Our Socials
@@ -80,7 +84,8 @@ Just follow the steps below:
 ![YouTube Channel Views](https://img.shields.io/youtube/channel/views/@The_Physionix?style=social)  
 [Instagram](https://www.instagram.com/the_physionix/)  
 [Youtube Channel](https://www.youtube.com/@The_Physionix/featured)  
-[Twitter](https://twitter.com/The_Physionix)  
+[Twitter](https://twitter.com/The_Physionix)
+[Facebook](https://www.facebook.com/profile.php?id=100091456045225&mibextid=ZbWKwL)
 
 # Contributing
 We are open to `enhancements` & `bug-fixes` 😊    
