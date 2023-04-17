@@ -1,4 +1,4 @@
-![physionix-image](media/Physionix-logo/cover.png)
+![physionix-image](media/Physionix-logo/cover-whitebg.png)
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/satanb4/physionix/c-cpp.yml?style=for-the-badge)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/satanb4/physionix?style=for-the-badge)
@@ -67,6 +67,7 @@ Just follow the steps below:
 | :white_check_mark: WebAPI Module              | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
 | :white_check_mark: Build Scripts (Sh)/ README | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
 | :white_check_mark: Github Actions             | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
+| :white_check_mark: Doxygen and In-Line docs   | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
 | :white_check_mark: EMG Actuation Module       | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
 | :white_check_mark: High-level Diagrams        | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
 | :white_check_mark: Media and Marketings       | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |

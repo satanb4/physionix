@@ -1,3 +1,12 @@
+/**
+ * @file main.cpp
+ * @brief Main file for the EMGFIlter application
+ * @author @satanb4
+ * @version 1.0
+ * @date 2023-04-15
+ * This is a sample application for the EMGFilter class. It generates random data and passes it to the filter.
+*/
+
 #include "../emg_filter.h"
 #include <cmath>
 #include <cstdlib>
@@ -7,6 +16,8 @@
 
 std::vector<double> testdata;
 double data;
+
+/// @brief The class to test the EMGFilter class
 class filtertest : public EMGFilter
 {
 	virtual void movementdetect(STATES currstate)
@@ -17,6 +28,7 @@ class filtertest : public EMGFilter
 };
 filtertest emgfilter;
 
+/// @brief The function to generate random data
 void generatedata()
 {
 	while (true)
@@ -33,6 +45,11 @@ void generatedata()
 	}
 
 }
+
+/// @brief The main function setting the filter parameters and calling the filter
+/// @param argc The number of arguments
+/// @param argv The arguments
+/// @return The return value (default 0)
 int main(int argc, char* argv[]) {
 	std::cout << "Starting Application" << std::endl;
 	EMG_filter filter;

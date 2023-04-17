@@ -1,3 +1,12 @@
+/**
+ * @file emg_server.cpp
+ * @brief Main file for the Web API application
+ * @author Bernd Porr <
+ * @version 1.0
+ * @date 2021-04-15
+ * @paragraph This file is based on the sample application from Bernd Porr of the implementation of a fastcgi web server.
+*/
+
 #include <string.h>
 #include <unistd.h>
 
@@ -5,16 +14,23 @@
 #include "EMGSensor.h"
 #include <jsoncpp/json/json.h>
 
+/**
+ * Copyright (c) 2021  Bernd Porr <mail@berndporr.me.uk>
+ **/
+
 // #define DEBUG
 
 bool mainRunning = true;
 
+/// @brief Signal handler for the application
+/// @param sig 
 void sigHandler(int sig) { 
 	if((sig == SIGHUP) || (sig == SIGINT)) {
 		mainRunning = false;
 	}
 }
 
+/// @brief Sets the signal handler for the application
 void setHUPHandler() {
 	struct sigaction act;
 	memset (&act, 0, sizeof (act));

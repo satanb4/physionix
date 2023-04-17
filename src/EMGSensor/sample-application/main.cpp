@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <iostream>
 
+/// @brief The test class for the ADS1115
 class ADS1115_test : public ADS1115
 {
 	virtual void newdata(float *data) { printf("\ndata is %f",*data);}
 };
 
+/// @brief The main function for the ADS1115 test application
 int main(int argc, char* argv[]) {
 	std::cout << "Starting application";
 	ADS1115_test ads1115tester;
