@@ -1,0 +1,29 @@
+name: Physionix C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Add Raspbian Repositories
+      run: sudo touch /etc/apt/sources.list.d/raspbian.list \
+          echo 'deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi' | sudo tee -a /etc/apt/sources.list.d/raspbian.list
+    - name: Update Repo
+      run: sudo apt-get -y update
+    - name: Build Physionix Application
+      run: export ACTIONS=true && ./build.sh
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Build Log
+        path: |
+          build
+          !build/**/build_log.txt
