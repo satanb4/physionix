@@ -1,7 +1,7 @@
 #ifndef __EMGSensor_H
 #define __EMGSensor_H
 
-// #define DEBUG
+#define DEBUG
 
 /**
  * Copyright (c) 2021  Bernd Porr <mail@berndporr.me.uk>
@@ -23,13 +23,13 @@ public:
 };
 
 #ifdef DEBUG
-class EMGSensor {
+class FakeSensor {
 
 public:
 
-	EMGSensor() = default;
+	FakeSensor() = default;
 
-	~EMGSensor() {
+	~FakeSensor() {
 		stop();
 	}
 
@@ -46,7 +46,7 @@ public:
 	 **/
 	void start() {
 		if (running) return;
-		thr = std::thread(&EMGSensor::exec,this);
+		thr = std::thread(&FakeSensor::exec,this);
 	}
 
 	/**
@@ -65,8 +65,9 @@ private:
 	void fakeEvent() {
 		float value = sin(t) * 5 + 20;
 		t += 0.1;
-		if (sensorCallback != nullptr) {
-			sensorCallback->hasSample(value);
+		if (nullptr != sensorCallback) {
+                        sensorCallback->hasSample(value);
+                }
         }
 
 	/**
@@ -89,7 +90,8 @@ private:
 	float t = 0;
 	bool running = false;
 	std::thread thr;
-}; 
+};
+
 #endif
 
 #endif
