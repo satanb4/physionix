@@ -42,6 +42,38 @@ Just follow the steps below:
   ./build.sh
   ```
 - The application will be present in the `build` folder
+
+## Features
+- :white_check_mark: Build Scripts for Raspberry Pi and Linux
+- :white_check_mark: Web UI for User Interaction
+- :white_check_mark: EMG Acquisition using ADS1115 ADC
+- :white_check_mark: Interrupt based data acquisition
+- :white_check_mark: Thread based data handling
+- :white_check_mark: EMG Signal Processing with FFT
+- :white_check_mark: Signal Classification
+- :white_check_mark: Handoff Back to Main Thread
+- :white_check_mark: Update Web UI with Signal Classification
+- :white_check_mark: Thread based management for servo control and Actuation
+
+## Contributions to Modules
+
+| Module                                                                | Contributor |
+| -------------------------------------------------                     | ---- |
+| :white_check_mark: ADS1115 / Build            | [Midhun Mathew](https://github.com/midhunjac)         |
+| :white_check_mark: EMGData Module             | [Midhun Mathew](https://github.com/midhunjac)         |
+| :white_check_mark: Core Integration           | [Midhun Mathew](https://github.com/midhunjac)         |
+| :white_check_mark: Top-Level Threading        | [Midhun Mathew](https://github.com/midhunjac)         |
+| :white_check_mark: EMGSignalProcessing Module | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
+| :white_check_mark: WebAPI Module              | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
+| :white_check_mark: Build Scripts (Sh)/ README | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
+| :white_check_mark: Github Actions             | [Sayan Bandyopadhyay](https://github.com/satanb4)     |
+| :white_check_mark: EMG Actuation Module       | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
+| :white_check_mark: High-level Diagrams        | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
+| :white_check_mark: Media and Marketings       | [Sri Krishna Sumanth](https://github.com/Sumanth0201) |
+
+### Schematics
+![Schematics](https://user-images.githubusercontent.com/123675167/229873061-d8c7acad-f5ce-4a66-b9ea-08cc2b337cba.png)
+
   
 # Our Socials
 ![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FThe_Physionix)
@@ -53,10 +85,6 @@ Just follow the steps below:
 # Contributing
 We are open to `enhancements` & `bug-fixes` 😊    
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=satanb4/physionix)
-
-
-### Schematics
-![Schematics](https://user-images.githubusercontent.com/123675167/229873061-d8c7acad-f5ce-4a66-b9ea-08cc2b337cba.png)
 
 # Contact Us 📧
 - This project is developed and maintained by :
