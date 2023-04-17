@@ -1,38 +1,40 @@
 #include "../EMGProcessing/emg_filter.h"
 #include "../EMGSensor/ADS1115.h"
-#include "../EMGApi/EMGSensor.h"
 
-class EMGdata: public ADS1115, public EMGFilter //public SensorCallback
+#ifndef EMGDATA_H
+
+class EMGdata : public ADS1115, public EMGFilter
 {
 private:
-	// SensorCallback* sensorcb; /*do not uncomment. will result in crash as of now.need to fix*/
-	
-	virtual void newdata(float* data)
-	{
+    std::vector<double> measuredata;
+
+    virtual void newdata(float* data)
+    {
 #ifdef DEBUG
-		printf("\new data is %f", *data+23);
+        printf("\new data is %f", *data+23);
 #endif // DEBUG
-		// sensorcb->hasSample(*data);
-		measuredata.push_back(*data);
-		if (measuredata.size() >= 256)
-		{
-			emgData = measuredata;
-			measuredata.clear();
-		}
-	}
-	virtual void movementdetect(STATES movement)
-	{
-		//printf("\nmovement is %d",movement);
-	}
-	void startDAQ();
-	std::thread daqthread;
+        measuredata.push_back(*data);
+        if (measuredata.size() >= 256)
+        {
+            emgData = measuredata;
+            measuredata.clear();
+        }
+    }
+
+    virtual void movementdetect(STATES movement)
+    {
+        //printf("\nmovement is %d",movement);
+    }
+    void startDAQ();
+    std::thread daqthread;
+
 public:
-EMGdata() {};
-	~EMGdata() 
-	{
-		
-	}
-	void _start();
-	void _stop();
-	std::vector<double> measuredata;
+    EMGdata() {};
+    ~EMGdata() {}
+	std::vector<double> getData() { return emgData; };
+    void _start();
+    void _stop();
 };
+
+
+#endif // EMGDATA_H

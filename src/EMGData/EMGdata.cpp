@@ -4,6 +4,7 @@
 #include <cmath>
 #include <thread>
 #include "EMGdata.h"
+#include "../EMGApi/EMGSensor.h"
 #include <cstdlib>
 
 
@@ -28,8 +29,12 @@ void EMGdata::startDAQ()
 
 void EMGdata::_start()
 {
-	// daqthread = std::thread(&EMGdata::startDAQ,this);
-	// std::system("./PhysionixServer");
+	printf("\nStarting app");
+	// Pass the callback to the sensor
+	sensor.setCallback(this);
+	// Start the data acquisition in the background
+	daqthread = std::thread(&EMGdata::startDAQ,this);
+	std::system("./PhysionixServer");
 	startDAQ();
 
 }
