@@ -53,3 +53,6 @@ pyenv/
 doc/
 html/
 latex/
+
+# Log files
+*.log
