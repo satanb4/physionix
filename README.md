@@ -44,6 +44,8 @@ Just follow the steps below:
 - The application will be present in the `build` folder
 - Generate Doxygen documentation for the project using `$ doxygen Doxyfile`
 
+## Documentation is live at [Physionix Docs](https://satanb4.github.io/)
+
 ## Features
 - :white_check_mark: Build Scripts for Raspberry Pi and Linux
 - :white_check_mark: Web UI for User Interaction
