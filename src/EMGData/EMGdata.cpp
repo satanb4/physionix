@@ -13,6 +13,8 @@
 #include "EMGdata.h"
 #include <cstdlib>
 
+//bool mainRunning = false;
+
 /**
  * @brief The constructor for the EMGdata class
  * @param None
@@ -22,67 +24,61 @@
 */
 void EMGdata::startDAQ()
 {
-    ADS1115_device device;
-    device.addr = 0x48;
-    device.data_rate = 128;
-    device.pga = PGA_2_048;
+	ADS1115_device device;
+	device.addr = 0x48;
+	device.data_rate = 128;
+	device.pga = PGA_2_048;
     EMG_filter filter;
     filter.filterOrder = 2;
-    filter.highPassCutoff =20;
-    filter.lowPassCutoff = 20;
-    filter.threshold = 0.1;
-    filter.sampleRate = 200;
-    filter.windowSize = 256;
+	filter.highPassCutoff =20;
+	filter.lowPassCutoff = 20;
+	filter.threshold = 0.1;
+	filter.sampleRate = 200;
+	filter.windowSize = 256;
 
-    ADS1115::start(device);
-    EMGFilter::set_filter_params(filter);
-    EMGFilter::start();
+	ADS1115::start(device);
+	EMGFilter::set_filter_params(filter);
+	EMGFilter::start();
 }
 
 /// @brief Starts the web application thread and the data acquisition thread
 void EMGdata::_start()
 {
-    printf("\nStarting app");
-    startDAQ();
-    startEmgApi();
-}
+	printf("\nStarting app");
+	startDAQ();
+	startEmgApi();
 
+}
 /// @brief Stops the web application thread and the data acquisition thread
 void EMGdata::_stop()
 {
-    printf("\nExiting app");
-    stopEmgApi();
-    ADS1115::stop();
-    EMGFilter::stop();
+	printf("\nExiting app");
+	stopEmgApi();
+	ADS1115::stop();
+	EMGFilter::stop();
 }
 
 /// @brief The function to callback the data to the web application
-void EMGdata::startEmgApi()
-{
-    sensor = new Sensor();
-    sensor->setCallback(EMGdata::sensorCallback);
-    server.setSensor(sensor);
-    server.start();
+void EMGdata::startEmgApi() {
+	Sensor sensor;
+	sensor.setCallback(this->sensorCallback);
+	Server server(&sensor);
+	server.start();
 }
 
 void EMGdata::newdata(float* data)
 {
-    sensor->hasSample(*data);
-    printf("\nnew data is %f", *data);
-    measuredata.push_back(*data);
-    if (measuredata.size() >= 256)
-    {
-        emgData = measuredata;
-        measuredata.clear();
-    }
+	sensor.hasSample(*data);
+	printf("\new data is %f", *data);
+	measuredata.push_back(*data);
+	if (measuredata.size() >= 256)
+	{
+		emgData = measuredata;
+		measuredata.clear();
+	}
 }
 
-void EMGdata::stopEmgApi()
-{
-    server.stop();
+void EMGdata::stopEmgApi() {
+	server.stop();
 }
 
-void EMGdata::sensorCallback(float* data) {
-    EMGdata* instance = reinterpret_cast<EMGdata*>(Server::getInstance()->getSensor()->getCallbackInstance());
-    instance->newdata(data);
-}
