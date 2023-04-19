@@ -11,6 +11,8 @@
 #include "../EMGProcessing/emg_filter.h"
 #include "../EMGSensor/ADS1115.h"
 #include "../EMGApi/EMGSensor.h"
+#include "../EMGApi/Server.h"
+#include "../EMGApi/Sensor.h"
 
 #ifndef EMGDATA_H
 #define EMGDATA_H
@@ -25,19 +27,10 @@ class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 {
 private:
     std::vector<double> measuredata;
-    Sensor sensor = Sensor();
+    std::vector<double> emgData;
+    SensorCallback* sensorCallback = nullptr;
 
-    virtual void newdata(float* data)
-    {
-        sensor.hasSample(*data);
-        //printf("\new data is %f", *data+23);
-        measuredata.push_back(*data);
-        if (measuredata.size() >= 256)
-        {
-            emgData = measuredata;
-            measuredata.clear();
-        }
-    }
+    void newdata(float* data){};
 
     virtual void movementdetect(STATES movement)
     {
@@ -51,6 +44,13 @@ private:
 public:
     EMGdata() {};
     ~EMGdata() {}
+    void setCallback(SensorCallback* cb) {
+		sensorCallback = cb;
+        if (nullptr != sensorCallback) {
+                        sensorCallback->hasSample(value);
+                }
+        }
+	}
 	std::vector<double> getData() { return emgData; };
     void _start();
     void _stop();

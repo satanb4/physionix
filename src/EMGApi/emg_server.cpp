@@ -212,6 +212,20 @@ private:
     std::thread m_serverThread;
 };
 
+
+int main(int argc, char *argv[]) {
+	SENSORfastcgicallback sensorfastcgicallback;
+
+	Server server(sensorfastcgicallback);
+	server.start();
+
+	std::cout << "Press enter to exit" << std::endl;
+	std::cin.get();
+
+	server.stop();
+	return 0;
+}
+
 	
 #ifdef DEBUG
 // Main program

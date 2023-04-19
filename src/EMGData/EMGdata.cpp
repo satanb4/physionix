@@ -11,7 +11,6 @@
 #include <cmath>
 #include <thread>
 #include "EMGdata.h"
-#include "../EMGApi/EMGSensor.h"
 #include <cstdlib>
 
 //bool mainRunning = false;
@@ -36,7 +35,7 @@ void EMGdata::startDAQ()
 	filter.threshold = 0.1;
 	filter.sampleRate = 200;
 	filter.windowSize = 256;
-	
+
 	ADS1115::start(device);
 	EMGFilter::set_filter_params(filter);
 	EMGFilter::start();
@@ -48,9 +47,6 @@ void EMGdata::_start()
 	printf("\nStarting app");
 	startDAQ();
 	startEmgApi();
-
-	SensorCallback* callback = this;
-	sensor.setCallback(callback);
 
 }
 /// @brief Stops the web application thread and the data acquisition thread
@@ -64,12 +60,25 @@ void EMGdata::_stop()
 
 /// @brief The function to callback the data to the web application
 void EMGdata::startEmgApi() {
-	
-	sensor.start();
-	
+	Sensor sensor;
+	sensor.setCallback(this->sensorCallback);
+	Server server(&sensor);
+	server.start();
+}
+
+void EMGdata::newdata(float* data)
+{
+	sensor.hasSample(*data);
+	printf("\new data is %f", *data);
+	measuredata.push_back(*data);
+	if (measuredata.size() >= 256)
+	{
+		emgData = measuredata;
+		measuredata.clear();
+	}
 }
 
 void EMGdata::stopEmgApi() {
-	sensor.stop();
+	server.stop();
 }
 
