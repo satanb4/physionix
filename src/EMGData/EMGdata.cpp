@@ -37,6 +37,8 @@ void EMGdata::startDAQ()
 	filter.sampleRate = 200;
 	filter.windowSize = 256;
 	
+	SensorCallback* callback = this;
+	sensor.setCallback(callback);
 	ADS1115::start(device);
 	EMGFilter::set_filter_params(filter);
 	EMGFilter::start();
@@ -55,7 +57,7 @@ void EMGdata::_stop()
 {
 	printf("\nExiting app");
 	stopEmgApi();
-	scb.stop();
+	sensor.stop();
 	ADS1115::stop();
 	EMGFilter::stop();
 }
@@ -63,7 +65,7 @@ void EMGdata::_stop()
 /// @brief The function to callback the data to the web application
 void EMGdata::startEmgApi() {
 	
-	scb.start();
+	sensor.start();
 	
 }
 

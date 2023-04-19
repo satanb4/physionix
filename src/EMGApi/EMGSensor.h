@@ -22,6 +22,20 @@ public:
 	};
 };
 
+class Server {
+public:
+    Server(SENSORfastcgicallback& sensor);
+    void start();
+    void stop();
+
+private:
+    SENSORfastcgicallback& m_sensor;
+    std::thread m_serverThread;
+    bool mainRunning{true};
+    void setHUPHandler();
+};
+
+
 #ifdef DEBUG
 class FakeSensor {
 

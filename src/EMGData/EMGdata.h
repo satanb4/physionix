@@ -25,10 +25,10 @@ class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 {
 private:
     std::vector<double> measuredata;
-    SensorCallback scb;
+    Sensor sensor();
     virtual void newdata(float* data)
     {
-        scb.hasSample(*data);
+        sensor.hasSample(*data);
         //printf("\new data is %f", *data+23);
         measuredata.push_back(*data);
         if (measuredata.size() >= 256)
