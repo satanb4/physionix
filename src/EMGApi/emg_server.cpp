@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <thread>
 
 #include "json_fastcgi_web_api.h"
 #include "EMGSensor.h"
@@ -177,6 +178,36 @@ public:
 	 * Pointer to the handler which keeps the emg_data
 	 **/
 	SENSORfastcgicallback* sensorfastcgi;
+};
+
+class Server {
+public:
+    Server(SENSORfastcgicallback& sensor) : m_sensor(sensor) {}
+
+    void start() {
+        m_serverThread = std::thread([&] {
+            setHUPHandler();
+
+            JSONCGIHandler handler;
+			handler.setGETCallback(new JSONCGIADCCallback(&m_sensor));
+			handler.setPOSTCallback(new SENSORPOSTCallback(&m_sensor));
+
+            while (mainRunning) {
+                handler.handle();
+            }
+        });
+    }
+
+    void stop() {
+        mainRunning = false;
+        if (m_serverThread.joinable()) {
+            m_serverThread.join();
+        }
+    }
+
+private:
+    SENSORfastcgicallback& m_sensor;
+    std::thread m_serverThread;
 };
 
 	
