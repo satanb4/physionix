@@ -49,11 +49,9 @@ public:
     void setCallback(SensorCallback* cb) {
 		sensorCallback = cb;
         if (nullptr != sensorCallback) {
-                        sensorCallback->hasSample(value);
-                }
+            sensorCallback->hasSample(value);
         }
-	}
-	std::vector<double> getData() { return emgData; };
+    }
     void _start();
     void _stop();
 };

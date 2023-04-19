@@ -35,19 +35,19 @@ void sigHandler(int sig) {
 }
 
 /// @brief Sets the signal handler for the application
-void setHUPHandler() {
-	struct sigaction act;
-	memset (&act, 0, sizeof (act));
-	act.sa_handler = sigHandler;
-	if (sigaction (SIGHUP, &act, NULL) < 0) {
-		perror ("sigaction");
-		exit (-1);
-	}
-	if (sigaction (SIGINT, &act, NULL) < 0) {
-		perror ("sigaction");
-		exit (-1);
-	}
-}
+// void setHUPHandler() {
+// 	struct sigaction act;
+// 	memset (&act, 0, sizeof (act));
+// 	act.sa_handler = sigHandler;
+// 	if (sigaction (SIGHUP, &act, NULL) < 0) {
+// 		perror ("sigaction");
+// 		exit (-1);
+// 	}
+// 	if (sigaction (SIGINT, &act, NULL) < 0) {
+// 		perror ("sigaction");
+// 		exit (-1);
+// 	}
+// }
 
 
 /**
@@ -74,12 +74,21 @@ public:
 	void hasSample(float v) {
 		lastValue = v;
 		emgBuffer.push_back(v);
-		if (emgBuffer.size() > maxBufSize) emgBuffer.pop_front();
+		if (emgBuffer.size() > maxBufSize) {
+			if (!emgBuffer.empty()) {
+				emgBuffer.pop_front();
+			}
+		}
 		// timestamp
 		t = getTimeMS();
 		timeBuffer.push_back(t);
-		if (timeBuffer.size() > maxBufSize) timeBuffer.pop_front();
+		if (timeBuffer.size() > maxBufSize) {
+			if (!timeBuffer.empty()) {
+				timeBuffer.pop_front();
+			}
+		}
 	}
+
 
 	void forceemg_data(float temp) {
 		for(auto& v:emgBuffer) {
@@ -183,29 +192,42 @@ public:
 	SENSORfastcgicallback* sensorfastcgi;
 };
 
+// Write a function to catch ctrl-c and kill signals then call the stop function
+void setHUPHandler() {
+	struct sigaction action;
+	memset(&action, 0, sizeof(struct sigaction));
+	action.sa_handler = [](int) {
+		std::cout << "Caught signal" << std::endl;
+		mainRunning = false;
+	};
+	sigaction(SIGHUP, &action, NULL);
+}
+
 class Server {
 public:
     Server(SENSORfastcgicallback& sensor) : m_sensor(sensor) {}
+    JSONCGIHandler handler;
 
     void start() {
         m_serverThread = std::thread([&] {
-			std::cout << "Starting server" << std::endl;
+            std::cout << "Starting server" << std::endl;
             setHUPHandler();
 
-            JSONCGIADCCallback callback(&m_sensor);
-	    	SENSORPOSTCallback postCallback(&m_sensor);
-	    	JSONCGIHandler handler;
+            SENSORPOSTCallback postCallback(&m_sensor);
+            JSONCGIADCCallback fastCGIADCCallback(&m_sensor);
 
-            while (!m_stopFlag) {
-                handler.start(&callback, &postCallback, "/tmp/sensorsocket");
-            }
+            std::cout << "Starting handler" << std::endl;
+            handler.start(&fastCGIADCCallback, &postCallback, "/tmp/sensorsocket");
         });
     }
 
     void stop() {
         {
+            std::cout << "Stopping server" << std::endl;
             std::lock_guard<std::mutex> lock(m_stopMutex);
             m_stopFlag = true;
+            std::lock_guard<std::mutex> handlerLock(m_handlerMutex);
+            handler.stop();
         }
         if (m_serverThread.joinable()) {
             m_serverThread.join();
@@ -217,18 +239,25 @@ private:
     std::thread m_serverThread;
     std::atomic<bool> m_stopFlag{false};
     std::mutex m_stopMutex;
+    std::mutex m_handlerMutex;
 };
 
+#ifdef DEBUG
 /// @brief This is a fake sensor which generates random values
 /// @param sensorfastcgi 
 void fakeSensor(SENSORfastcgicallback* sensorfastcgi) {
-    while (mainRunning) {
+    while (true) {
         double random = rand() % 100;
+        std::cout << "random: " << random << std::endl;
         sensorfastcgi->hasSample(random);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
+/// @brief Main function for server class
+/// @param argc 
+/// @param argv 
+/// @return 
 int main(int argc, char *argv[]) {
     try {
         SENSORfastcgicallback sensorfastcgicallback;
@@ -238,9 +267,14 @@ int main(int argc, char *argv[]) {
 
         std::thread sensorThread(fakeSensor, &sensorfastcgicallback);
 
-        server.stop();
-
-        sensorThread.join();
+        while (mainRunning) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+        if (!mainRunning) {
+            std::cout << "Stopping server" << std::endl;
+            server.stop();
+            sensorThread.join();
+        }
         return 0;
     } catch (const std::exception& ex) {
         std::cerr << "Caught exception: " << ex.what() << std::endl;
@@ -248,9 +282,6 @@ int main(int argc, char *argv[]) {
     }
 }
 
-
-	
-#ifdef DEBUG
 // Main program
 int main(int argc, char *argv[]) {
 	std::cout << "Starting the Main Server" << std::endl;

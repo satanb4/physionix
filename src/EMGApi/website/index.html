@@ -54,10 +54,10 @@ $(document).ready(function() {
 
     $("#driver").click(function(event){
     var d = 
-                {
-        emg_data: 20,
-        steps: 5,
-        hello: "This is the base EMG value"
+        {
+            emg_data: 20,
+            steps: 5,
+            hello: "This is the base EMG value"
         };
     $.ajax({
         type: 'POST',
@@ -65,8 +65,8 @@ $(document).ready(function() {
                 data: JSON.stringify(d),
         contentType: "application/json",
         dataType: 'json'
-    });
         });
+    });
     
     window.intervalId = setInterval(function() {
     // callback for interval timer for every second

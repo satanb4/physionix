@@ -7,7 +7,9 @@
 
 class Server {
 public:
-    Server(SENSORfastcgicallback& sensor);
+    Server(SENSORfastcgicallback& sensor) {
+        m_sensor = sensor;
+    };
     void start();
     void stop();
 
