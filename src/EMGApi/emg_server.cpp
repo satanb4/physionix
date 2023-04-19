@@ -188,13 +188,14 @@ public:
         m_serverThread = std::thread([&] {
             setHUPHandler();
 
-            JSONCGIHandler handler;
-			handler.~JSONCGIHandler();
-			handler.GETCallback(new JSONCGIADCCallback(&m_sensor));
-			handler.POSTCallback(new SENSORPOSTCallback(&m_sensor));
+            JSONCGIADCCallback callback(&m_sensor);
+			SENSORPOSTCallback postCallback(&m_sensor);
+			JSONCGIHandler handler;
 
             while (mainRunning) {
-                handler.handle();
+                JSONCGIHandler handler;
+				handler.start( &callback,&postCallback,
+							    "/tmp/sensorsocket");
             }
         });
     }
