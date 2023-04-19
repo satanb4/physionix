@@ -189,8 +189,9 @@ public:
             setHUPHandler();
 
             JSONCGIHandler handler;
-			handler.setGETCallback(new JSONCGIADCCallback(&m_sensor));
-			handler.setPOSTCallback(new SENSORPOSTCallback(&m_sensor));
+	    handler.~JSONCGIHandler();
+	    handler.GETCallback(new JSONCGIADCCallback(&m_sensor));
+	    handler.POSTCallback(new SENSORPOSTCallback(&m_sensor));
 
             while (mainRunning) {
                 handler.handle();
