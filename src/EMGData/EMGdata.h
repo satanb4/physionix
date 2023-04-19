@@ -25,7 +25,8 @@ class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 {
 private:
     std::vector<double> measuredata;
-    Sensor sensor();
+    Sensor sensor = Sensor();
+
     virtual void newdata(float* data)
     {
         sensor.hasSample(*data);
