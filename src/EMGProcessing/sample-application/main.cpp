@@ -33,7 +33,9 @@ void generatedata()
 {
 	while (true)
 	{
-		 data = (rand() % 100 / 15)+26;
+		data = (rand() % 100 / 15)+26;
+		// Sleep the thread for 5 ms
+		std::this_thread::sleep_for(std::chrono::milliseconds(2));
 		testdata.push_back(data);
 		if(testdata.size() >=256)
 		{

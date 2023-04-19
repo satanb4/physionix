@@ -24,11 +24,11 @@
 #include <mutex>
 
 #define RELAXED_MIN     0
-#define RELAXED_MAX     3000
-#define FLEXED_MIN      9000
-#define FLEXED_MAX      12000
-#define ROTATING_MAX    3000
-#define ROTATING_MIN    9000
+#define RELAXED_MAX     1500
+#define FLEXED_MIN      1500
+#define FLEXED_MAX      2500
+#define ROTATING_MIN    2500
+#define ROTATING_MAX    4000
 
 #define DEFAULT_SAMPLERATE          200
 #define DEFAULT_WINDOWSIZE          256

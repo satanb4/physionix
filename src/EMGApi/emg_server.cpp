@@ -178,6 +178,7 @@ public:
 	 **/
 	SENSORfastcgicallback* sensorfastcgi;
 };
+
 	
 #ifdef DEBUG
 // Main program
