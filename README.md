@@ -42,6 +42,9 @@ Just follow the steps below:
   ./build.sh
   ```
 - The application will be present in the `build` folder
+- Generate Doxygen documentation for the project using `$ doxygen Doxyfile`
+
+## Documentation is live at [Physionix Docs](https://satanb4.github.io/)
 
 ## Features
 - :white_check_mark: Build Scripts for Raspberry Pi and Linux
@@ -74,6 +77,8 @@ Just follow the steps below:
 
 ### Schematics
 ![Schematics](https://user-images.githubusercontent.com/123675167/229873061-d8c7acad-f5ce-4a66-b9ea-08cc2b337cba.png)
+![UML](https://github.com/Sumanth0201/physionix/blob/main/flow%20diagram.png)
+
 
   
 # Our Socials
@@ -81,7 +86,8 @@ Just follow the steps below:
 ![YouTube Channel Views](https://img.shields.io/youtube/channel/views/@The_Physionix?style=social)  
 [Instagram](https://www.instagram.com/the_physionix/)  
 [Youtube Channel](https://www.youtube.com/@The_Physionix/featured)  
-[Twitter](https://twitter.com/The_Physionix)  
+[Twitter](https://twitter.com/The_Physionix)
+[Facebook](https://www.facebook.com/profile.php?id=100091456045225&mibextid=ZbWKwL)
 
 # Contributing
 We are open to `enhancements` & `bug-fixes` 😊    
@@ -92,3 +98,30 @@ We are open to `enhancements` & `bug-fixes` 😊
   * [Sayan Bandyopadhyay](https://github.com/satanb4)
   * [Midhun Mathew](https://github.com/midhunjac) 
   * [Sri Krishna Sumanth](https://github.com/Sumanth0201)
+ 
+ ---
+## License
+
+MIT License
+
+Copyright (c) [2023] [Sayan Bandyopadhyay]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+```
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

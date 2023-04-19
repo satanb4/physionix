@@ -10,6 +10,7 @@
 
 #include "../EMGProcessing/emg_filter.h"
 #include "../EMGSensor/ADS1115.h"
+#include "../EMGApi/EMGSensor.h"
 
 #ifndef EMGDATA_H
 #define EMGDATA_H
@@ -20,16 +21,15 @@
  * @return None
  * @paragraph This is the header class for the EMGdata. It contains basic functionality definitions for the data acquisition.
 */
-class EMGdata : public ADS1115, public EMGFilter
+class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 {
 private:
     std::vector<double> measuredata;
-
+    SensorCallback scb;
     virtual void newdata(float* data)
     {
-#ifdef DEBUG
-        printf("\new data is %f", *data+23);
-#endif // DEBUG
+        scb.hasSample(*data);
+        //printf("\new data is %f", *data+23);
         measuredata.push_back(*data);
         if (measuredata.size() >= 256)
         {
@@ -40,10 +40,12 @@ private:
 
     virtual void movementdetect(STATES movement)
     {
-        //printf("\nmovement is %d",movement);
+        //invoke the motor actuation code
     }
     void startDAQ();
     std::thread daqthread;
+    void startEmgApi();
+    void stopEmgApi();
 
 public:
     EMGdata() {};
