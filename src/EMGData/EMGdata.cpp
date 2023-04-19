@@ -60,9 +60,7 @@ void EMGdata::_stop()
 
 /// @brief The function to callback the data to the web application
 void EMGdata::startEmgApi() {
-	Sensor sensor;
 	sensor.setCallback(this->sensorCallback);
-	Server server(&sensor);
 	server.start();
 }
 

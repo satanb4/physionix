@@ -28,6 +28,8 @@ class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 private:
     std::vector<double> measuredata;
     std::vector<double> emgData;
+    Sensor sensor;
+    Server server(&sensor);
     SensorCallback* sensorCallback = nullptr;
 
     void newdata(float* data){};
