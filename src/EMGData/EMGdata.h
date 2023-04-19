@@ -8,6 +8,7 @@
  * @bug No known bugs.
 */
 
+#include <thread>
 #include "../EMGProcessing/emg_filter.h"
 #include "../EMGSensor/ADS1115.h"
 #include "../EMGApi/EMGSensor.h"
@@ -25,6 +26,7 @@ class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 {
 private:
     std::vector<double> measuredata;
+    std::thread* webThread=nullptr;
     SensorCallback scb;
     virtual void newdata(float* data)
     {

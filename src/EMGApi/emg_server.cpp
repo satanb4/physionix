@@ -31,7 +31,7 @@ void sigHandler(int sig) {
 }
 
 /// @brief Sets the signal handler for the application
-void setHUPHandler() {
+void SensorCallback::setHUPHandler() {
 	struct sigaction act;
 	memset (&act, 0, sizeof (act));
 	act.sa_handler = sigHandler;
@@ -179,14 +179,11 @@ public:
 	SENSORfastcgicallback* sensorfastcgi;
 };
 	
-#ifdef DEBUG
+
 // Main program
-int main(int argc, char *argv[]) {
+void SensorCallback::start() {
 	std::cout << "Starting the Main Server" << std::endl;
-	// getting all the ADC related acquistion set up
-	FakeSensor sensorcomm;
 	SENSORfastcgicallback sensorfastcgicallback;
-	sensorcomm.setCallback(&sensorfastcgicallback);
 
 	// Callback handler for data which arrives from the the
 	// browser via jquery json post requests:
@@ -207,25 +204,17 @@ int main(int argc, char *argv[]) {
 	jsoncgiHandler.start(&fastCGIADCCallback,&postCallback,
 							    "/tmp/sensorsocket");
 
-	// starting the data acquisition at the given sampling rate
-	sensorcomm.start();
-
 	// catching Ctrl-C or kill -HUP so that we can terminate properly
 	setHUPHandler();
-
-	fprintf(stderr,"'%s' up and running.\n",argv[0]);
 
 	// Just do nothing here and sleep. It's all dealt with in threads!
 	// At this point for example a GUI could be started such as QT
 	// Here, we just wait till the user presses ctrl-c which then
 	// sets mainRunning to zero.
 	while (mainRunning) sleep(1);
-
-	fprintf(stderr,"'%s' shutting down.\n",argv[0]);
-
-	sensorcomm.stop();
-	jsoncgiHandler.stop();
-
-	return 0;
 }
-#endif
+
+void SensorCallback::stop() {
+	JSONCGIHandler jsoncgiHandler;
+	jsoncgiHandler.stop();
+}

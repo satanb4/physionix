@@ -47,7 +47,8 @@ void EMGdata::_start()
 {
 	printf("\nStarting app");
 	startDAQ();
-	startEmgApi();
+	if(nullptr!=webThread) return;
+	webThread = new std::thread(&EMGdata::startEmgApi, this);
 
 }
 /// @brief Stops the web application thread and the data acquisition thread
@@ -55,7 +56,11 @@ void EMGdata::_stop()
 {
 	printf("\nExiting app");
 	stopEmgApi();
-	scb.stop();
+	if(webThread->joinable()) {
+		webThread->join();
+		delete webThread;
+		webThread=nullptr;
+	} 
 	ADS1115::stop();
 	EMGFilter::stop();
 }

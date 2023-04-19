@@ -7,6 +7,7 @@
  * Copyright (c) 2021  Bernd Porr <mail@berndporr.me.uk>
  **/
 
+#include <iostream>
 #include <math.h>
 #include <chrono>
 #include <thread>
@@ -18,8 +19,12 @@
 class SensorCallback {
 public:
 	virtual void hasSample(float sample) {
-		(void)sample;
+		std::cout << "Sample: " << sample << std::endl;
+		//(void)sample;
 	};
+	void setHUPHandler();
+	void start();
+	void stop();
 };
 
 #ifdef DEBUG

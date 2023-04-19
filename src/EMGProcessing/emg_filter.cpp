@@ -269,7 +269,7 @@ double EMGFilter::extractMovement(const std::vector<double>& fftData, double thr
     movement /= fftData.size();
     movement -= 2*10e4;
     movement = abs(movement);
-    std::cout<<"movement: "<< movement <<std::endl;
+    //std::cout<<"movement: "<< movement <<std::endl;
 
     newstate =  deducestate(movement);
     movementData.push_back(newstate);
