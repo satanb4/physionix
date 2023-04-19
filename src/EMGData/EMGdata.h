@@ -11,8 +11,6 @@
 #include "../EMGProcessing/emg_filter.h"
 #include "../EMGSensor/ADS1115.h"
 #include "../EMGApi/EMGSensor.h"
-#include "../EMGApi/Server.h"
-#include "../EMGApi/Sensor.h"
 
 #ifndef EMGDATA_H
 #define EMGDATA_H
@@ -28,10 +26,9 @@ class EMGdata : public ADS1115, public EMGFilter, public SensorCallback
 private:
     std::vector<double> measuredata;
     std::vector<double> emgData;
-    SENSORfastcgicallback sensor;
-    Server server;
+    SENSORfastcgicallback& sensor;
     SensorCallback* sensorCallback = nullptr;
-
+    
     void newdata(float* data){};
 
     virtual void movementdetect(STATES movement)
