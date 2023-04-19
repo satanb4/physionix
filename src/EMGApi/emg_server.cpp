@@ -10,6 +10,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <thread>
+#include <mutex>
+#include <atomic>
+
 
 #include "json_fastcgi_web_api.h"
 #include "EMGSensor.h"
@@ -186,22 +189,24 @@ public:
 
     void start() {
         m_serverThread = std::thread([&] {
+			std::cout << "Starting server" << std::endl;
             setHUPHandler();
 
             JSONCGIADCCallback callback(&m_sensor);
 	    	SENSORPOSTCallback postCallback(&m_sensor);
 	    	JSONCGIHandler handler;
 
-            while (mainRunning) {
-                JSONCGIHandler handler;
-				handler.start( &callback,&postCallback,
-							    "/tmp/sensorsocket");
+            while (!m_stopFlag) {
+                handler.start(&callback, &postCallback, "/tmp/sensorsocket");
             }
         });
     }
 
     void stop() {
-        mainRunning = false;
+        {
+            std::lock_guard<std::mutex> lock(m_stopMutex);
+            m_stopFlag = true;
+        }
         if (m_serverThread.joinable()) {
             m_serverThread.join();
         }
@@ -210,21 +215,39 @@ public:
 private:
     SENSORfastcgicallback& m_sensor;
     std::thread m_serverThread;
+    std::atomic<bool> m_stopFlag{false};
+    std::mutex m_stopMutex;
 };
 
+/// @brief This is a fake sensor which generates random values
+/// @param sensorfastcgi 
+void fakeSensor(SENSORfastcgicallback* sensorfastcgi) {
+    while (mainRunning) {
+        double random = rand() % 100;
+        sensorfastcgi->hasSample(random);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
 
 int main(int argc, char *argv[]) {
-	SENSORfastcgicallback sensorfastcgicallback;
+    try {
+        SENSORfastcgicallback sensorfastcgicallback;
 
-	Server server(sensorfastcgicallback);
-	server.start();
+        Server server(sensorfastcgicallback);
+        server.start();
 
-	std::cout << "Press enter to exit" << std::endl;
-	std::cin.get();
+        std::thread sensorThread(fakeSensor, &sensorfastcgicallback);
 
-	server.stop();
-	return 0;
+        server.stop();
+
+        sensorThread.join();
+        return 0;
+    } catch (const std::exception& ex) {
+        std::cerr << "Caught exception: " << ex.what() << std::endl;
+        return 1;
+    }
 }
+
 
 	
 #ifdef DEBUG
