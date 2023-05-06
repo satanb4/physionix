@@ -57,5 +57,8 @@ latex/
 # Log files
 *.log
 
+# Test files
+myTest*
+
 #Library Files
 Eigen/

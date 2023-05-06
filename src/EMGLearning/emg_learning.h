@@ -28,6 +28,8 @@ class NeuralNetwork {
         void calcErrors(RowVector& output);
         void updateWeights();
         void train(std::vector<RowVector*> data, std::vector<RowVector*> outputData);
+        void predict(RowVector& input);
+        void saveWeights(std::string filename);
 
         std::vector<RowVector*> neuronLayers;
         std::vector<RowVector*> cacheLayers;
@@ -35,6 +37,8 @@ class NeuralNetwork {
         std::vector<Matrix*> weights;
         std::vector<uint> topology;
         Scalar learningRate;
+
+        ~NeuralNetwork();
     
     private:
         Scalar activationFunction(Scalar x);

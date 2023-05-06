@@ -10,6 +10,9 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "emg_learning.h"
 
 /**
@@ -145,6 +148,7 @@ Scalar NeuralNetwork::activationFunctionDerivative(Scalar x) {
 }
 
 void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data) {
+    std::cout << "Training started" << std::endl;
     for (uint i = 0; i < input_data.size(); i++) {
         std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
         forwardPropagate(*input_data[i]);
@@ -152,5 +156,32 @@ void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVec
         std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
         backwardPropagate(*output_data[i]);
         std::cout << "MSE : " << std::sqrt((*deltas.back()).dot((*deltas.back())) / deltas.back()->size()) << std::endl;
+    }
+    std::cout << "Training complete" << std::endl;
+}
+
+void NeuralNetwork::predict(RowVector& input) {
+    forwardPropagate(input);
+    std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
+}
+
+void NeuralNetwork::saveWeights(std::string filename) {
+    std::ofstream file;
+    file.open(filename);
+    for (uint i = 0; i < weights.size(); i++) {
+        file << *weights[i] << std::endl;
+    }
+    file.close();
+}
+
+// Write a destructor to free the memory allocated to the matrices
+NeuralNetwork::~NeuralNetwork() {
+    for (uint i = 0; i<neuronLayers.size(); i++) {
+        delete neuronLayers[i];
+        delete cacheLayers[i];
+        delete deltas[i];
+        if (i != neuronLayers.size() - 1) {
+            delete weights[i];
+        }
     }
 }
