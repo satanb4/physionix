@@ -56,3 +56,6 @@ latex/
 
 # Log files
 *.log
+
+#Library Files
+Eigen/

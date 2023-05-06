@@ -72,3 +72,24 @@ if [ -d $cgi_dir ]; then
 else
     echo "jsonfastcgi directory not found. Skipping..." | tee -a $build_log
 fi
+
+# Install Eigen Library to directory for EMGLearning
+echo 'Installing Eigen Library...' | tee -a $build_log
+eigen_lib="eigen-3.4.0.tar.bz2"
+eigen_dir="${packages}/${eigen_lib}"
+learning_dir="${base_dir}/src/EMGLearning"
+if [ -f $eigen_dir ]; then
+    echo "Found Eigen zip. Building..." | tee -a $build_log
+    cp $eigen_dir $learning_dir
+    cd $learning_dir
+    if [ -d "Eigen" ]; then
+        echo "Eigen directory found. Removing..." | tee -a $build_log
+        sudo rm -rf Eigen
+    fi
+    mkdir Eigen
+    tar -xjf $eigen_lib -C Eigen/ | tee -a $build_log
+    mv Eigen/eigen-3.4.0/* Eigen/ && rm -rf Eigen/eigen-3.4.0 $eigen_lib 
+    echo "Eigen build complete." | tee -a $build_log
+else
+    echo "Eigen zip not found. Skipping..." | tee -a $build_log
+fi
