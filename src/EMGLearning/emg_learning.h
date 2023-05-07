@@ -30,6 +30,8 @@ class NeuralNetwork {
         void train(std::vector<RowVector*> data, std::vector<RowVector*> outputData);
         void predict(RowVector& input);
         void saveWeights(std::string filename);
+        void loadWeights(std::string filename);
+        void printWeights();
 
         std::vector<RowVector*> neuronLayers;
         std::vector<RowVector*> cacheLayers;

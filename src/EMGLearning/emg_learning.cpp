@@ -147,6 +147,13 @@ Scalar NeuralNetwork::activationFunctionDerivative(Scalar x) {
     return 1 - tanhf(x) * tanhf(x);
 }
 
+/**
+ * @brief Trains the network
+ * @param input_data vector<RowVector*>
+ * @param output_data vector<RowVector*>
+ * @return None
+ * @details The input and output data are passed to the network and the network is trained using the forward and backward propagation
+*/
 void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data) {
     std::cout << "Training started" << std::endl;
     for (uint i = 0; i < input_data.size(); i++) {
@@ -160,11 +167,23 @@ void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVec
     std::cout << "Training complete" << std::endl;
 }
 
+/**
+ * @brief Predicts the output for the given input
+ * @param input RowVector
+ * @return None
+ * @details The input is passed to the network and the output is predicted
+*/
 void NeuralNetwork::predict(RowVector& input) {
     forwardPropagate(input);
     std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
 }
 
+/**
+ * @brief Saves the weights of the network to a file
+ * @param filename string
+ * @return None
+ * @details The weights are saved to a file
+*/
 void NeuralNetwork::saveWeights(std::string filename) {
     std::ofstream file;
     file.open(filename);
@@ -174,13 +193,55 @@ void NeuralNetwork::saveWeights(std::string filename) {
     file.close();
 }
 
-// Write a destructor to free the memory allocated to the matrices
+/**
+ * @brief Loads the weights of the network from a file
+ * @param filename string
+ * @return None
+ * @details The weights are loaded from a file
+*/
+void NeuralNetwork::loadWeights(std::string filename) {
+    std::ifstream file;
+    file.open(filename);
+    std::string line;
+    for (uint i = 0; i < weights.size(); i++) {
+        while(getline(file, line)) {
+            std::stringstream ss(line);
+            for (uint c = 0; c < weights[i]->cols(); c++) {
+                for (uint r = 0; r < weights[i]->rows(); r++) {
+                    ss >> weights[i]->coeffRef(r,c);
+                }
+            }
+        }
+    }
+    file.close();
+}
+
+/**
+ * @brief Prints the weights of the network
+ * @param None
+ * @return None
+ * @details The weights are printed to the console
+*/
+void NeuralNetwork::printWeights() {
+    for (uint i = 0; i < weights.size(); i++) {
+        std::cout << "Weight " << i << std::endl;
+        std::cout << *weights[i] << std::endl;
+    }
+}
+
+/**
+ * @brief Destructor for the network
+ * @param None
+ * @return None
+ * @details The memory allocated for the network is freed
+*/
 NeuralNetwork::~NeuralNetwork() {
     for (uint i = 0; i<neuronLayers.size(); i++) {
         delete neuronLayers[i];
         delete cacheLayers[i];
         delete deltas[i];
         if (i != neuronLayers.size() - 1) {
+            std::cout << "Deleting weight " << i << std::endl;
             delete weights[i];
         }
     }

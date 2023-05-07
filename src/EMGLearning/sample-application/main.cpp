@@ -78,12 +78,14 @@ void genData(const std::string& filename)
 */
 int main()
 {
-    NeuralNetwork n({ 2, 3, 1 }, 0.005);
+    NeuralNetwork n({ 2, 4, 6, 1 }, 0.005);
     std::vector<RowVector*> in_dat, out_dat;
     genData("myTest");
     ReadCSV("myTest-in", in_dat);
     ReadCSV("myTest-out", out_dat);
     n.train(in_dat, out_dat);
     n.saveWeights("myTestWeights");
+    n.loadWeights("myTestWeights");
+    n.printWeights();
     return 0;
 }
