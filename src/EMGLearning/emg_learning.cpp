@@ -66,25 +66,7 @@ NeuralNetwork::NeuralNetwork(std::vector<uint> topology, Scalar learningRate) {
 }
 
 /**
- * @brief Forward propagates the input through the network
- * @param input RowVector
- * @return None
- * @details The input is set to the first layer of the network. The input is then forward propagated through the network.
-*/
-void NeuralNetwork::forwardPropagate(RowVector& input) {
-    // Setting the input layer
-    // block(row, col, rows, cols)
-    neuronLayers.front()->block(0,0,1, neuronLayers.front()->size() - 1) = input;
-
-    // Forward propagating the input
-    // unaryExpr applies the activation function to each element of the matrix
-    for (uint i = 1; i<topology.size(); i++) {
-        (*neuronLayers[i]) = (*neuronLayers[i-1]) * (*weights[i-1]);
-        neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr([this](double x) { return activationFunction(x); }).eval();
-    }
-}
-
-/**
+ * @private
  * @brief Back propagates the error through the network
  * @param input RowVector
  * @return None
@@ -102,6 +84,7 @@ void NeuralNetwork::calcErrors(RowVector& output) {
 }
 
 /**
+ * @private
  * @brief Updates the weights of the network
  * @param None
  * @return None
@@ -131,6 +114,27 @@ void NeuralNetwork::updateWeights() {
 }
 
 /**
+ * @private
+ * @brief Forward propagates the input through the network
+ * @param input RowVector
+ * @return None
+ * @details The input is set to the first layer of the network. The input is then forward propagated through the network.
+*/
+void NeuralNetwork::forwardPropagate(RowVector& input) {
+    // Setting the input layer
+    // block(row, col, rows, cols)
+    neuronLayers.front()->block(0,0,1, neuronLayers.front()->size() - 1) = input;
+
+    // Forward propagating the input
+    // unaryExpr applies the activation function to each element of the matrix
+    for (uint i = 1; i<topology.size(); i++) {
+        (*neuronLayers[i]) = (*neuronLayers[i-1]) * (*weights[i-1]);
+        neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr([this](double x) { return activationFunction(x); }).eval();
+    }
+}
+
+/**
+ * @private
  * @brief Back propagates the error through the network
  * @param input RowVector
  * @return None
@@ -141,10 +145,22 @@ void NeuralNetwork::backwardPropagate(RowVector& output) {
     updateWeights();
 }
 
+/**
+ * @private
+ * @brief Activation function
+ * @param x
+ * @return tanh(x); Can be changed to any other activation function
+*/
 Scalar NeuralNetwork::activationFunction(Scalar x) {
     return tanhf(x);
 }
 
+/**
+ * @private
+ * @brief Derivative of the activation function
+ * @param x
+ * @return 1 - tanh(x) * tanh(x); Can be changed to any other activation derivative function
+*/
 Scalar NeuralNetwork::activationFunctionDerivative(Scalar x) {
     return 1 - tanhf(x) * tanhf(x);
 }
@@ -171,17 +187,6 @@ void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVec
         #endif
     }
     std::cout << "Training complete" << std::endl;
-}
-
-/**
- * @brief Predicts the output for the given input
- * @param input RowVector
- * @return None
- * @details The input is passed to the network and the output is predicted
-*/
-void NeuralNetwork::predict(RowVector& input) {
-    forwardPropagate(input);
-    std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
 }
 
 /**
@@ -232,6 +237,12 @@ void NeuralNetwork::printWeights() {
         std::cout << "Weight " << i << std::endl;
         std::cout << *weights[i] << std::endl;
     }
+}
+
+float NeuralNetwork::predict(RowVector& input) {
+    forwardPropagate(input);
+    float output = neuronLayers.back()->coeffRef(0,0);
+    return output;
 }
 
 /**

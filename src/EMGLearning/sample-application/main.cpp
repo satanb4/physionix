@@ -72,26 +72,62 @@ void genData(const std::string& filename)
     file2.close();
 }
 
+
+/**
+ * @brief A testing helper function to train a model
+ * @param filename The name of the file to write to
+ * @param iterations The number of iterations to train for
+ * @param learningRate The learning rate to use
+ * @return void
+ * @details This function trains a model for the EMGLearning application by taking a between 0 and 1 and writing it to an input file
+*/
+void trainModel(const std::string& filename, int iterations, Scalar learningRate=0.005)
+{
+    std::vector<RowVector*> in_dat, out_dat;
+    ReadCSV(filename + "-in", in_dat);
+    ReadCSV(filename + "-out", out_dat);
+    NeuralNetwork n({ 2, 4, 5, 1 }, learningRate);
+    for (uint i = 0; i < iterations; i++){
+        if (i > 0 )
+            n.loadWeights(filename + "Weights");
+        std::cout << "Epoch " << i << std::endl;
+        n.train(in_dat, out_dat);
+        n.saveWeights(filename + "Weights");
+    }
+    n.saveWeights(filename + "Weights");
+}
+
+/**
+ * @brief A testing helper function to test a trained model
+ * @param filename The name of the file to write to
+ * @return void
+ * @details This function tests a trained model for the EMGLearning application by taking a between 0 and 1 and writing it to an input file
+*/
+void testTrainedModel(const std::string& filename)
+{
+    std::vector<RowVector*> in_dat, out_dat;
+    ReadCSV(filename + "-in", in_dat);
+    ReadCSV(filename + "-out", out_dat);
+    NeuralNetwork n({ 2, 4, 5, 1 }, 0.005);
+    n.loadWeights(filename + "Weights");
+    uint32_t correct = 0;
+    for (uint32_t i = 0; i < in_dat.size(); i++) {
+        float out = n.predict(*in_dat[i]);
+        if (abs(out - out_dat[i]->coeffRef(0, 0)) < 0.1)
+            correct++;
+    }
+    std::cout << "Accuracy: " << (static_cast<Scalar>(correct) / static_cast<Scalar>(in_dat.size())) * 100 << "%" << std::endl;
+}
+
 /**
  * @brief The main function
- * @return 0
+ * @return int
+ * @details This function is the main function for the EMGLearning application. It calls the helper functions to generate data, train a model, and test a trained model.
 */
 int main()
 {
-    // RowVector* test_data = new RowVector(1, 2);
-    // test_data->coeffRef(0, 0) = 0.0860558;
-    // test_data->coeffRef(0, 1) = 0.192214;
-
-    NeuralNetwork n({ 2, 4, 5, 1 }, 0.005);
-    std::vector<RowVector*> in_dat, out_dat;
     genData("myTest");
-    ReadCSV("myTest-in", in_dat);
-    ReadCSV("myTest-out", out_dat);
-    n.train(in_dat, out_dat);
-    n.saveWeights("myTestWeights");
-    // n.loadWeights("myTestWeights");
-    // n.printWeights();
-    // n.predict(*test_data);
-    // delete test_data;
+    trainModel("myTest", 25);
+    testTrainedModel("myTest");
     return 0;
 }
