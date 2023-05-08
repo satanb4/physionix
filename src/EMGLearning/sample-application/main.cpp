@@ -62,7 +62,7 @@ void genData(const std::string& filename)
 {
     std::ofstream file1(filename + "-in");
     std::ofstream file2(filename + "-out");
-    for (uint r = 0; r < 20000; r++) {
+    for (uint r = 0; r < 100000; r++) {
         Scalar x = static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX);
         Scalar y = static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX);
         file1 << x << "," << y << std::endl;
@@ -78,14 +78,20 @@ void genData(const std::string& filename)
 */
 int main()
 {
-    NeuralNetwork n({ 2, 4, 5, 1 }, 0.01);
+    // RowVector* test_data = new RowVector(1, 2);
+    // test_data->coeffRef(0, 0) = 0.0860558;
+    // test_data->coeffRef(0, 1) = 0.192214;
+
+    NeuralNetwork n({ 2, 4, 5, 1 }, 0.005);
     std::vector<RowVector*> in_dat, out_dat;
     genData("myTest");
     ReadCSV("myTest-in", in_dat);
     ReadCSV("myTest-out", out_dat);
     n.train(in_dat, out_dat);
     n.saveWeights("myTestWeights");
-    n.loadWeights("myTestWeights");
-    n.printWeights();
+    // n.loadWeights("myTestWeights");
+    // n.printWeights();
+    // n.predict(*test_data);
+    // delete test_data;
     return 0;
 }

@@ -15,6 +15,8 @@
 #include <string>
 #include "emg_learning.h"
 
+// #define DEBUG
+
 /**
  * @brief Constructor for NeuralNetwork class
  * @param topology Vector of unsigned integers
@@ -157,12 +159,16 @@ Scalar NeuralNetwork::activationFunctionDerivative(Scalar x) {
 void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data) {
     std::cout << "Training started" << std::endl;
     for (uint i = 0; i < input_data.size(); i++) {
-        std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
+        
         forwardPropagate(*input_data[i]);
+        backwardPropagate(*output_data[i]);
+
+        #ifdef DEBUG
+        std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
         std::cout << "Expected output is : " << *output_data[i] << std::endl;
         std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
-        backwardPropagate(*output_data[i]);
         std::cout << "MSE : " << std::sqrt((*deltas.back()).dot((*deltas.back())) / deltas.back()->size()) << std::endl;
+        #endif
     }
     std::cout << "Training complete" << std::endl;
 }
@@ -204,12 +210,11 @@ void NeuralNetwork::loadWeights(std::string filename) {
     file.open(filename);
     std::string line;
     for (uint i = 0; i < weights.size(); i++) {
-        while(getline(file, line)) {
+        for (uint r=0; r<weights[i]->rows(); r++) {
+            getline(file, line);
             std::stringstream ss(line);
-            for (uint c = 0; c < weights[i]->cols(); c++) {
-                for (uint r = 0; r < weights[i]->rows(); r++) {
-                    ss >> weights[i]->coeffRef(r,c);
-                }
+            for (uint c=0; c<weights[i]->cols(); c++) {
+                ss >> weights[i]->coeffRef(r,c);
             }
         }
     }
@@ -241,7 +246,6 @@ NeuralNetwork::~NeuralNetwork() {
         delete cacheLayers[i];
         delete deltas[i];
         if (i != neuronLayers.size() - 1) {
-            std::cout << "Deleting weight " << i << std::endl;
             delete weights[i];
         }
     }
