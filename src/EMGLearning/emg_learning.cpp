@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <omp.h>
 #include "emg_learning.h"
 
 // #define DEBUG
@@ -91,6 +92,7 @@ void NeuralNetwork::calcErrors(RowVector& output) {
  * @details The weights are updated using the delta and the learning rate
 */
 void NeuralNetwork::updateWeights() {
+    #pragma omp parallel for collapse(3)
     /// Updating the weights for the hidden layers
     /// If the layer is the output layer, the bias is not updated, number of neurons = number of columns
     /// If the layer is a hidden layer, the bias is updated, number of neurons = number of columns - 1
@@ -127,6 +129,7 @@ void NeuralNetwork::forwardPropagate(RowVector& input) {
 
     // Forward propagating the input
     // unaryExpr applies the activation function to each element of the matrix
+    #pragma omp parallel for
     for (uint i = 1; i<topology.size(); i++) {
         (*neuronLayers[i]) = (*neuronLayers[i-1]) * (*weights[i-1]);
         neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr([this](double x) { return activationFunction(x); }).eval();
@@ -256,7 +259,7 @@ NeuralNetwork::~NeuralNetwork() {
         delete neuronLayers[i];
         delete cacheLayers[i];
         delete deltas[i];
-        if (i != neuronLayers.size() - 1) {
+        if (i != neuronLayers.size()) {
             delete weights[i];
         }
     }

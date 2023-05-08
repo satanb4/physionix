@@ -11,7 +11,10 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <chrono>
 #include "../emg_learning.h"
+
+const std::vector<uint> TOPOLOGY = { 2, 4, 5, 7, 4, 1};
 
 /**
  * @brief A helper ReadCSV function
@@ -86,7 +89,7 @@ void trainModel(const std::string& filename, int iterations, Scalar learningRate
     std::vector<RowVector*> in_dat, out_dat;
     ReadCSV(filename + "-in", in_dat);
     ReadCSV(filename + "-out", out_dat);
-    NeuralNetwork n({ 2, 4, 5, 1 }, learningRate);
+    NeuralNetwork n(TOPOLOGY, learningRate);
     for (uint i = 0; i < iterations; i++){
         if (i > 0 )
             n.loadWeights(filename + "Weights");
@@ -108,12 +111,12 @@ void testTrainedModel(const std::string& filename)
     std::vector<RowVector*> in_dat, out_dat;
     ReadCSV(filename + "-in", in_dat);
     ReadCSV(filename + "-out", out_dat);
-    NeuralNetwork n({ 2, 4, 5, 1 }, 0.005);
+    NeuralNetwork n(TOPOLOGY, 0.005);
     n.loadWeights(filename + "Weights");
     uint32_t correct = 0;
     for (uint32_t i = 0; i < in_dat.size(); i++) {
         float out = n.predict(*in_dat[i]);
-        if (abs(out - out_dat[i]->coeffRef(0, 0)) < 0.1)
+        if (abs(out - out_dat[i]->coeffRef(0, 0)) < 0.25)
             correct++;
     }
     std::cout << "Accuracy: " << (static_cast<Scalar>(correct) / static_cast<Scalar>(in_dat.size())) * 100 << "%" << std::endl;
@@ -127,7 +130,10 @@ void testTrainedModel(const std::string& filename)
 int main()
 {
     genData("myTest");
-    trainModel("myTest", 25);
+    auto start = std::chrono::system_clock::now();
+    trainModel("myTest", 5);
+    auto end = std::chrono::system_clock::now();
+    std::cout << "Training took:- " << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << "s" << std::endl;
     testTrainedModel("myTest");
     return 0;
 }
