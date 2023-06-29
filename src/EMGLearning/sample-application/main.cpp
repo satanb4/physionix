@@ -14,7 +14,7 @@
 #include <chrono>
 #include "../emg_learning.h"
 
-const std::vector<uint> TOPOLOGY = { 2, 4, 5, 7, 4, 1};
+const std::vector<uint> TOPOLOGY = { 2, 3, 5, 1};
 
 /**
  * @brief A helper ReadCSV function
@@ -116,7 +116,7 @@ void testTrainedModel(const std::string& filename)
     uint32_t correct = 0;
     for (uint32_t i = 0; i < in_dat.size(); i++) {
         float out = n.predict(*in_dat[i]);
-        if (abs(out - out_dat[i]->coeffRef(0, 0)) < 0.25)
+        if (abs(out - out_dat[i]->coeffRef(0, 0)) < 0.1)
             correct++;
     }
     std::cout << "Accuracy: " << (static_cast<Scalar>(correct) / static_cast<Scalar>(in_dat.size())) * 100 << "%" << std::endl;
@@ -131,7 +131,7 @@ int main()
 {
     genData("myTest");
     auto start = std::chrono::system_clock::now();
-    trainModel("myTest", 5);
+    trainModel("myTest", 50);
     auto end = std::chrono::system_clock::now();
     std::cout << "Training took:- " << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << "s" << std::endl;
     testTrainedModel("myTest");
